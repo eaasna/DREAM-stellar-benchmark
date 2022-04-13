@@ -16,11 +16,9 @@ min_overlap = 40
 
 rule make_all:
 	input:
-		"table1.tsv"
+		expand("valik/search_rep{rep}_e{er}.out", rep=repetitions, er=error_rates)
 	shell:
 		"echo 'Done'"
 
-include: "rules/simulate.smk"
-include: "rules/stellar.smk"
-include: "rules/evaluate.smk"
+include: "rules/valik.smk"
 

@@ -5,9 +5,18 @@ reference_length: 102400 # should ref_len always == query_len?
 query_length: 102400 
 match_count: 51 # (102400 / 2000) = 51 matches per query file
 
+# valik parameters
+ibf_bins: 64
+ibf_size: "200k"
+query_segments: 256
+window: 15
+kmer_length: 15
+pattern_overlap: 49
+
 # stellar parameters
 num_matches: 100
 sort_threshold: 101
 
 # evaluation parameters
-repeat: 10
+#repeat: 10
+repeat: 1

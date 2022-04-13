@@ -5,4 +5,5 @@
 */ground_truth/*
 */evaluation/*
 */.snakemake/*
+*/valik/*
 */.ipynb_checkpoints/*

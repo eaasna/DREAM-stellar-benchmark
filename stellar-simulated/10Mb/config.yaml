@@ -7,9 +7,11 @@ match_count: 5240 # (10485760 / 2000) = 5240 matches per query file
 
 # valik parameters
 ibf_bins: 8
+ibf_size: "20M"
+query_segments: 2048
 window: 23
 kmer_length: 19
-ibf_size: "20M"
+pattern_overlap: 10
 
 # stellar parameters
 num_matches: 7000
