@@ -31,7 +31,7 @@ rule dream_accuracy:
 	output:
 		"evaluation/valik_rep{rep}_e{er}.tsv"
 	shell:
-		script_dir + "/search_accuracy.sh {input.truth} {input.search} {min_len} {min_overlap} {input.ref_meta} {output}"
+		"{shared_script_dir}/search_accuracy.sh {input.truth} {input.search} {min_len} {min_overlap} {input.ref_meta} {output}"
 
 rule valik_table1:
 	input:
@@ -54,7 +54,7 @@ rule blast_accuracy:
 	output:
 		"evaluation/blast_rep{rep}_e{er}.tsv"
 	shell:
-		script_dir + "/search_accuracy.sh {input.truth} {input.search} {min_len} {min_overlap} {input.ref_meta} {output}"
+		"{shared_script_dir}/search_accuracy.sh {input.truth} {input.search} {min_len} {min_overlap} {input.ref_meta} {output}"
 
 rule blast_table1:
 	input:
@@ -77,7 +77,7 @@ rule blast_default_accuracy:
 	output:
 		"evaluation/blast_default_rep{rep}_e{er}.tsv"
 	shell:
-		script_dir + "/search_accuracy.sh {input.truth} {input.search} {min_len} {min_overlap} {input.ref_meta} {output}"
+		"{shared_script_dir}/search_accuracy.sh {input.truth} {input.search} {min_len} {min_overlap} {input.ref_meta} {output}"
 
 rule blast_default_table1:
 	input:
@@ -100,7 +100,7 @@ rule last_accuracy:
 	output:
 		"evaluation/last_rep{rep}_e{er}.tsv"
 	shell:
-		script_dir + "/search_accuracy.sh {input.truth} {input.search} {min_len} {min_overlap} {input.ref_meta} {output}"
+		"{shared_script_dir}/search_accuracy.sh {input.truth} {input.search} {min_len} {min_overlap} {input.ref_meta} {output}"
 
 rule last_table1:
 	input:
@@ -123,7 +123,7 @@ rule lastz_accuracy:
 	output:
 		"evaluation/lastz_rep{rep}_e{er}.tsv"
 	shell:
-		script_dir + "/search_accuracy.sh {input.truth} {input.search} {min_len} {min_overlap} {input.ref_meta} {output}"
+		"{shared_script_dir}/search_accuracy.sh {input.truth} {input.search} {min_len} {min_overlap} {input.ref_meta} {output}"
 
 rule lastz_table1:
 	input:
