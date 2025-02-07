@@ -30,9 +30,9 @@ rule valik_build:
 	shell:
 		"""
 		( /usr/bin/time -a -o {valik_build_log} -f "%e\t%M\t%x\t%C\t{threads}\t{bins}\t{fpr}\t{wildcards.er}\t{min_len}\t{shape}" valik build --threads {threads} --output {output} --ref-meta {input.ref_meta})
-		
+
 		truncate -s -1 {valik_build_log}
-		ls -lh {output} | awk "{{OFS="\\t"}};{{print "\t" \$5 }}" >> {valik_build_log}
+		ls -lh {output} | awk '{{ print "\t" $5 }}' >> {valik_build_log}
 		"""
 
 valik_search_log="valik_search.time"
