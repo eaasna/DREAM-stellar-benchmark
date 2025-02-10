@@ -20,8 +20,8 @@ done
 log="log.txt"
 data_dir="/buffer/ag_abi/evelina/1000genomes/phase2/ftp.sra.ebi.ac.uk/vol1/run"
 work_dir="/group/ag_abi/evelina/DREAM-stellar-benchmark/structural-variants"
-min_len=50
-er=0.02
+min_len=100
+er=0.033
 
 ref="/srv/data/evelina/human/GCA_000001405.15_GRCh38_full_analysis_set.fna"
 ref_dna4="/srv/data/evelina/human/unmasked_dna4.fa"
@@ -42,7 +42,7 @@ while read ftp_path; do
 	run_id=$(basename $(dirname $ftp_path))
 	sample_id=$(basename $(dirname $(dirname $ftp_path)))
 	sample_dir="$data_dir/$sample_id/$run_id"	
-
+	echo "$sample_id/$run_id"
 	reads="$sample_dir/$bam_filename"
 	mapped="$sample_dir/pbmm2.bam"
 	unmapped="$sample_dir/unmapped.bam"
@@ -50,14 +50,14 @@ while read ftp_path; do
 	if [ ! -f $fasta ]; then
 		echo "Can not find $fasta"
 		if [ ! -f "$sample_dir/$bam_filename" ]; then
-			cd $data_dir
-			echo "Downloading $bam_filename"
-			wget -x $ftp_filename >> $log 2>&1
+			cd $data_dir/../../../
+			echo -e "Downloading $bam_filename"
+			wget -x $ftp_path >> $log 2>&1
 			cd $work_dir
 		fi
 
 		if [ ! -f "$unmapped" ]; then
-			echo "Map reads for $sample_id/$run_id"
+			echo -e "\tMapping reads"
 			./map_reads.sh $index $reads $mapped $unmapped $fasta >> $log 2>&1
 			rm $reads
 			rm $mapped
@@ -66,11 +66,14 @@ while read ftp_path; do
 
 	local_matches="$sample_dir/l${min_len}_e${er}.gff"
 	if [ ! -f $local_matches ]; then
-		echo "Finding local alignments for $sample_id/$run_id"
+		echo -e "\tFinding local alignments"
 		./find_local_matches.sh $ref_dna4 $min_len $er $fasta $local_matches >> $log 2>&1
 	fi
 	
-	echo "Finding inversions in $sample_dir"
-	./find_inversions.sh $local_matches >> $log 2>&1
+	if [ ! -d $sample_dir/potential_inversions_l${min_len}_e${er} ]; then
+		echo -e "\tFinding inversions"
+		./find_inversions.sh $local_matches $min_len $er >> $log 2>&1
+	fi
 
 done < file_paths.txt
+
