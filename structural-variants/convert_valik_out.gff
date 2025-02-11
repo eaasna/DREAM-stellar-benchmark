@@ -4,9 +4,20 @@ set -e
 
 dir="/buffer/ag_abi/evelina/1000genomes/phase2/ftp.sra.ebi.ac.uk/vol1/run"
 cd $dir
+work_dir="/group/ag_abi/evelina/DREAM-stellar-benchmark/structural-variants"
 
-for id in "HG00731"; do
+
+for id in "HG00731" "HG00732" "NA19238" "NA19239"; do
 	in="${id}_l100_e0.033.gff"
 	out="${id}_l100_e0.033_simple.gff"
-	awk '{print $1 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\tchr1;seq2Range=0,100;eValue=0;cigar=;mutations="}' $in | grep chrs_in_meta.txt > $out
+	awk '{print $1 "\t" $2 "\t" $3 "\t" $4 - 100 "\t" $5 + 100 "\t" $6 "\t" $7 "\t" $8 "\tchr1;seq2Range=0,100;eValue=0;cigar=;mutations="}' $in > $out.tmp
+
+	if [ -f $out ]; then
+		rm $out
+	fi
+
+	while read chr; do
+		awk -v c="$chr" '$1==c' $out.tmp >> $out
+	done < $work_dir/chrs_in_meta.txt
+	rm $out.tmp
 done
