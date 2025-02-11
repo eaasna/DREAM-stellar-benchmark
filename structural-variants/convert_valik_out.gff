@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+dir="/buffer/ag_abi/evelina/1000genomes/phase2/ftp.sra.ebi.ac.uk/vol1/run"
+cd $dir
+
+for id in "HG00731"; do
+	in="${id}_l100_e0.033.gff"
+	out="${id}_l100_e0.033_simple.gff"
+	awk '{print $1 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\tchr1;seq2Range=0,100;eValue=0;cigar=;mutations="}' $in | grep chrs_in_meta.txt > $out
+done
