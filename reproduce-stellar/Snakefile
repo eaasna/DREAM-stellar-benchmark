@@ -33,7 +33,7 @@ bins = config["ibf_bins"]
 overlap = min_len - 1
 max_capacity = config["cart_max_capacity"]
 max_carts = config["max_queued_carts"]
-shape = "111101101101111"
+shape = "1110100101001101111"
 shape_weight = shape.count("1")
 shape_size = len(shape)
 
