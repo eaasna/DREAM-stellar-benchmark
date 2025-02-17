@@ -1,0 +1,61 @@
+HG00731
+Total variants 106789
+True positive variants 641
+False positive variants 12318 (precision 100)
+Fraction of new variants .950
+HG00732
+Total variants 106789
+True positive variants 520
+False positive variants 11262 (precision 100)
+Fraction of new variants .955
+NA19238
+Total variants 106789
+True positive variants 270
+False positive variants 5048 (precision 100)
+Fraction of new variants .949
+NA19239
+Total variants 106789
+True positive variants 590
+False positive variants 8721 (precision 100)
+Fraction of new variants .936
+HG00731
+Total variants 106789
+True positive variants 1078
+False positive variants 9464 (precision 1000)
+Fraction of new variants .897
+HG00732
+Total variants 106789
+True positive variants 926
+False positive variants 8860 (precision 1000)
+Fraction of new variants .905
+NA19238
+Total variants 106789
+True positive variants 459
+False positive variants 4149 (precision 1000)
+Fraction of new variants .900
+NA19239
+Total variants 106789
+True positive variants 964
+False positive variants 6734 (precision 1000)
+Fraction of new variants .874
+HG00731
+Total variants 106789
+True positive variants 3349
+False positive variants 6138 (precision 10000)
+Fraction of new variants .646
+HG00732
+Total variants 106789
+True positive variants 3174
+False positive variants 5966 (precision 10000)
+Fraction of new variants .652
+NA19238
+Total variants 106789
+True positive variants 1550
+False positive variants 3072 (precision 10000)
+Fraction of new variants .664
+NA19239
+Total variants 106789
+True positive variants 2622
+False positive variants 4560 (precision 10000)
+Fraction of new variants .634
+
