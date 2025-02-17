@@ -20,8 +20,11 @@ done
 log="log.txt"
 data_dir="/buffer/ag_abi/evelina/1000genomes/phase2/ftp.sra.ebi.ac.uk/vol1/run"
 work_dir="/group/ag_abi/evelina/DREAM-stellar-benchmark/structural-variants"
+
 min_len=50
 er=0.02
+precision=10000
+mask_repeats=1
 find_inv=0
 
 ref="/srv/data/evelina/human/GCA_000001405.15_GRCh38_full_analysis_set.fna"
@@ -43,11 +46,12 @@ while read ftp_path; do
 	run_id=$(basename $(dirname $ftp_path))
 	sample_id=$(basename $(dirname $(dirname $ftp_path)))
 	sample_dir="$data_dir/$sample_id/$run_id"	
-	echo "$sample_id/$run_id"
+	#echo "$sample_id/$run_id"
 	reads="$sample_dir/$bam_filename"
 	mapped="$sample_dir/pbmm2.bam"
 	unmapped="$sample_dir/unmapped.bam"
 	fasta="$sample_dir/unmapped.fa"
+	echo "Processing $sample_dir"
 	if [ ! -f $fasta ]; then
 		echo "Can not find $fasta"
 		if [ ! -f "$sample_dir/$bam_filename" ]; then
@@ -57,18 +61,41 @@ while read ftp_path; do
 			cd $work_dir
 		fi
 
+
 		if [ ! -f "$unmapped" ]; then
 			echo -e "\tMapping reads"
-			./map_reads.sh $index $reads $mapped $unmapped $fasta >> $log 2>&1
+			./workflow_scripts/map_reads.sh $index $reads $mapped $unmapped $fasta >> $log 2>&1
 			rm $reads
 			rm $mapped
 		fi
+		
 	fi
 
+	if [ $mask_repeats -eq 1 ]; then
+		fasta="$sample_dir/masked.fa"
+		if [ ! -s $fasta ]; then
+			echo -e "\tMasking repeats"
+			dna5="$fasta.dna5.fa"
+			dust $sample_dir/unmapped.fa > $dna5
+
+			seq_len=$(grep -v ">" $dna5 | wc -c | awk '{print $1}')
+			repeat_len=$(grep -v ">" $dna5 | grep -o N | wc -l | awk '{print $1}')
+
+			echo "Total sequence length $seq_len"
+			echo "Repeat length $repeat_len"
+			frac=$(bc <<< "scale=3; $repeat_len/$seq_len")
+			echo "Fraction of repeats $frac"
+
+			st_dna5todna4 $dna5 > $fasta
+			rm $dna5
+		fi
+	fi
+	
 	local_matches="$sample_dir/l${min_len}_e${er}.gff"
 	if [ ! -f $local_matches ]; then
 		echo -e "\tFinding local alignments"
-		./workflow_scripts/find_local_matches.sh $ref_dna4 $min_len $er $fasta $local_matches >> $log 2>&1
+		./workflow_scripts/find_local_matches.sh $ref_dna4 $min_len $er $fasta $local_matches 
+		#>> $log 2>&1
 	fi
 	
 	if [ $find_inv -eq 1 ]; then
@@ -84,11 +111,13 @@ done < meta/file_paths.txt
 awk -F'/' '{print $8}' meta/file_paths.txt | awk -F'-' '{print $1}' | awk -F'_' '{print $1}' | sort | uniq > meta/sample_ids.txt
 
 while read id; do
+	echo "$id"
 	sample_out="${id}_l${min_len}_e${er}_simple.gff"
 	if [ ! -f $sample_out ]; then 
-		echo "${id}_l${min_len}_e${er}_simple.gff does not exist" 
+		#echo "${id}_l${min_len}_e${er}_simple.gff does not exist" 
 		./workflow_scripts/gather_sample_matches.sh $min_len $er $id
-		./workflow_scripts/convert_valik_gff.sh $min_len $er $id
+		./workflow_scripts/convert_valik_gff.sh $min_len $er $id $precision
+		./workflow_scripts/evaluate_accuracy.sh $min_len $er $id $precision
 	fi
 done < meta/sample_ids.txt
 
