@@ -15,7 +15,15 @@ er=$3
 unmapped_reads=$4
 matches=$5
 
-s="1111110110110111111"
+#s="11111010010100110111111"
+s="111110101010110111111"
+# the threshold should be much lower than expected because repeat masking affects ca 50% of bases
+threshold=21
+if [ $minlen -eq 50 ]; then
+	threshold=7
+	echo "threshold $threshold"
+fi
+
 numMatches=200
 sortThresh=$((numMatches+1))
 
@@ -36,12 +44,12 @@ sample_dir="$(dirname "$unmapped_reads")"
 	
 log="$sample_dir/search_valik.time"
 ( /usr/bin/time -a -o $log -f "%e\t%M\t%x\t%C" \
-	valik search --keep-best-repeats --bin-entropy-cutoff 0.25 \
+	valik search --keep-best-repeats --bin-entropy-cutoff 0.5 \
 		--split-query --index $index --ref-meta $meta \
 		--query $unmapped_reads --error-rate $er --threads 16 \
 		--output $matches --cart-max-capacity 100 \
 		--numMatches $numMatches --sortThresh $sortThresh \
-		--without-parameter-tuning --threshold 31 \
+		--without-parameter-tuning --threshold $threshold \
 		--seg-count $seg_count --max-queued-carts 1024 \
 		--pattern $minlen \
 		--verbose &> $matches.search.err )

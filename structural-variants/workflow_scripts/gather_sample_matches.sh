@@ -29,7 +29,7 @@ if [ -f $sample_inv ]; then
 	rm $sample_inv
 fi
 while read dir; do
-	echo $dir
+	#echo $dir
 	if [ $inv_only -eq 1 ]; then	
 		cat $dir/potential_inversions_l${min_len}_e${er}/*.gff > $sample_inv
 	else
