@@ -12,14 +12,14 @@ rule stellar_accuracy:
 
 rule stellar_table1:
 	input:
-                benchmark = expand("benchmarks/stellar_rep{rep}_e{er}.txt", rep=repetitions, er=error_rates),
-                evaluation = expand("evaluation/stellar_rep{rep}_e{er}.tsv", rep=repetitions, er=error_rates)
+                benchmark = expand("benchmarks/stellar_rep{rep}_e{er}.txt", rep=repetitions, er=all_error_rates),
+                evaluation = expand("evaluation/stellar_rep{rep}_e{er}.tsv", rep=repetitions, er=all_error_rates)
 	output:
 		"stellar_table1.tsv"
 	params:
 		repeats = n,	# set as parameters to use in .py
 		prefix = "stellar",
-		error_rates = error_rates
+		error_rates = all_error_rates
 	script:
 		"../scripts/make_stellar_table1.py"
 

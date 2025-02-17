@@ -57,7 +57,7 @@ def get_blast_word_size(wildcards):
 	errors = int(round(float(wildcards.er) * min_len)) 
 	print(errors)
 	for k in range(49, 6, -1):
-		if ((min_len - k + 1 - errors * k) > 1):
+		if ((min_len - k + 1 - errors * k) >= 1):
 			print("Max word size " + str(k) + " for max error rate " + wildcards.er)
 			return k
 
