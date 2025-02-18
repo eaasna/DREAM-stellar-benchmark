@@ -5,7 +5,7 @@ f.close()
 
 rule valik_split_ref:
 	input:
-		ref = "ref_rep{rep}.fasta"
+		ref = data_dir + "ref_rep{rep}.fasta"
 	output: 
 		ref_meta = "meta/ref_rep{rep}_e{er}.bin"
 	threads: 1
@@ -20,7 +20,7 @@ f.write("time\tmem\texit-code\tcommand\tthreads\tbins\tfpr\terror-rate\tmin-len\
 f.close()
 rule valik_build:
 	input:
-		ref = "ref_rep{rep}.fasta",
+		ref = data_dir + "ref_rep{rep}.fasta",
 		ref_meta = "meta/ref_rep{rep}_e{er}.bin"
 	output: 
 		temp("/dev/shm/rep{rep}_e{er}.index")
@@ -42,7 +42,7 @@ f.close()
 rule valik_search:
 	input:
 		ibf = "/dev/shm/rep{rep}_e{er}.index",
-		query = "query/rep{rep}_e{er}.fasta",
+		query = data_dir + "query/rep{rep}_e{er}.fasta",
 		ref_meta = "meta/ref_rep{rep}_e{er}.bin"
 	output:
 		"valik/rep{rep}_e{er}.gff"

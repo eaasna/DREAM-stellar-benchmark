@@ -1,7 +1,7 @@
 rule stellar_accuracy:
 	input:
 		search = "stellar/rep{rep}_e{er}.gff",
-		truth = "ground_truth/rep{rep}_e{er}.tsv"
+		truth = data_dir + "ground_truth/rep{rep}_e{er}.tsv"
 	output:
 		"evaluation/stellar_rep{rep}_e{er}.tsv"
 	shell:
@@ -26,7 +26,7 @@ rule stellar_table1:
 rule dist_stellar_accuracy:
 	input:
 		search = "dist_stellar/rep{rep}_e{er}.gff",
-		truth = "ground_truth/rep{rep}_e{er}.tsv"
+		truth = data_dir + "ground_truth/rep{rep}_e{er}.tsv"
 	output:
 		"evaluation/dist_stellar_rep{rep}_e{er}.tsv"
 	shell:

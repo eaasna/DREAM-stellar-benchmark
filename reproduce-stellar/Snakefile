@@ -21,6 +21,7 @@ fpr = 0.005
 min_overlap = 10
 
 workdir: "work/" + config["workdir"]
+data_dir = "/srv/data/evelina/" + config["workdir"]
 
 #-------- Simulation parameters --------
 ref_len = config["reference_length"]

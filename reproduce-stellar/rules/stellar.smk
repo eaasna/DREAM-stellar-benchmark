@@ -6,7 +6,7 @@ f.close()
 rule distribute_stellar:
 	input:
 		ref_meta = "meta/ref_rep{rep}_e{er}.bin",
-		query = "query/rep{rep}_e{er}.fasta"
+		query = data_dir + "query/rep{rep}_e{er}.fasta"
 	output: 
 		"dist_stellar/rep{rep}_e{er}.gff"
 	threads: workflow.cores
@@ -27,8 +27,8 @@ rule distribute_stellar:
 
 rule stellar:
 	input:
-		ref = "ref_rep{rep}.fasta",
-		query = "query/rep{rep}_e{er}.fasta"
+		ref = data_dir + "ref_rep{rep}.fasta",
+		query = data_dir + "query/rep{rep}_e{er}.fasta"
 	output: 
 		"stellar/rep{rep}_e{er}.gff"
 	threads: workflow.cores

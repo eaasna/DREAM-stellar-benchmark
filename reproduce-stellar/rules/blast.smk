@@ -5,9 +5,9 @@ f.close()
 
 rule blast_index:
 	input:
-		"ref_rep{rep}.fasta"
+		data_dir + "ref_rep{rep}.fasta"
 	output: 
-		"ref_rep{rep}.fasta.ndb"
+		"/dev/shm/ref_rep{rep}.fasta.ndb"
 	benchmark:
 		"benchmarks/blast_build_rep{rep}.txt"
 	threads: workflow.cores
@@ -24,9 +24,9 @@ def blast_kmer_size(wildcards):
 
 rule blast_default_search:
 	input:
-		ref = "ref_rep{rep}.fasta",
-		db = "ref_rep{rep}.fasta.ndb",
-		query = "query/rep{rep}_e{er}.fasta"
+		ref = data_dir + "ref_rep{rep}.fasta",
+		db = "/dev/shm/ref_rep{rep}.fasta.ndb",
+		query = data_dir + "query/rep{rep}_e{er}.fasta"
 	output:
 		"blast_default/rep{rep}_e{er}.bed"
 	threads: workflow.cores
@@ -43,9 +43,9 @@ rule blast_default_search:
 		
 rule blast_search:
 	input:
-		ref = "ref_rep{rep}.fasta",
-		db = "ref_rep{rep}.fasta.ndb",
-		query = "query/rep{rep}_e{er}.fasta"
+		ref = data_dir + "ref_rep{rep}.fasta",
+		db = "/dev/shm/ref_rep{rep}.fasta.ndb",
+		query = data_dir + "query/rep{rep}_e{er}.fasta"
 	output:
 		"blast/rep{rep}_e{er}.bed"
 	params:

@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-REP=$1 # gives a unique name to each output file
-REF_LENGTH=$2 	# 2^20 = 1Mb
-QUERY_LENGTH=$3 	# 2^20 = 1Mb
-REF_SEED=$4
-QUERY_SEED=$5
+REF_OUT=$1
+QUERY_OUT=$2
+REF_LENGTH=$3 	# 2^20 = 1Mb
+QUERY_LENGTH=$4 	# 2^20 = 1Mb
+REF_SEED=$5
+QUERY_SEED=$6
 
 execs=(mason_genome mason_variator generate_local_matches)
 for exec in "${execs[@]}"; do
@@ -31,8 +32,8 @@ for exec in "${execs[@]}"; do
 done
 
 echo "Simulating reference of length $REF_LENGTH with seed $REF_SEED"
-mason_genome -l $REF_LENGTH -o ref_rep$REP.fasta -s $REF_SEED &> /dev/null
+mason_genome -l $REF_LENGTH -o $REF_OUT -s $REF_SEED &> /dev/null
 
 echo "Simulating query of length $QUERY_LENGTH with seed $QUERY_SEED"
-mason_genome -l $QUERY_LENGTH -o random_rep$REP.fasta -s $QUERY_SEED &> /dev/null
+mason_genome -l $QUERY_LENGTH -o $QUERY_OUT -s $QUERY_SEED &> /dev/null
 
