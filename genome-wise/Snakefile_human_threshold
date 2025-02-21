@@ -132,11 +132,11 @@ rule make_all:
 #
 #               expand(blast_out + "/" + run_id + "_e{ev}_k{k}.bed", ev = evalues, k = blast_kmer_lengths)
 		# shape manual threshold search
-		# expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads),
+		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads),
 		expand("dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff", min_len = min_lens, er = errors, rp = repeat_periods, rl = repeat_lengths),
 #		# shape deduce threshold search
-		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, rp = repeat_periods, rl = repeat_lengths)
-#		expand(last_out + "/" + run_id + "_w{last_w}_k{last_k}_m{last_m}.bed", last_w = last_index_every, last_k = last_query_every, last_m = last_initial_matches)
+		#expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, rp = repeat_periods, rl = repeat_lengths)
+#		#expand(last_out + "/" + run_id + "_w{last_w}_k{last_k}_m{last_m}.bed", last_w = last_index_every, last_k = last_query_every, last_m = last_initial_matches)
 	shell:
 		"echo 'Done'"
 

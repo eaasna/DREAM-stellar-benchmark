@@ -75,7 +75,7 @@ rule blast_accuracy:
 	input:
 		search = "blast/rep{rep}_e{er}.bed",
 		truth = "dist_stellar/rep{rep}_e{er}.gff",
-		ref_meta = "meta/ref_rep{rep}_e{er}.bin"
+		ref_meta = ancient("meta/ref_rep{rep}_e{er}.bin")
 	output:
 		"evaluation/blast_rep{rep}_e{er}.tsv"
 	shell:

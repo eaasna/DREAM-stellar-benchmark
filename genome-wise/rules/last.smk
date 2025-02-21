@@ -39,7 +39,7 @@ rule last_search:
 		db = last_out + "/" + run_id + "_w{last_w}.suf",
 		query = dir_path(config["query"]) + "dna4.fasta"
 	output:
-		last_out + "/" + run_id + "_w{last_w}_k{last_k}_m{last_m}.tsv"
+		temp(last_out + "/" + run_id + "_w{last_w}_k{last_k}_m{last_m}.tsv")
 	threads: workflow.cores
 	params:
 		db = db_name
@@ -62,7 +62,7 @@ rule last_convert_to_blast:
 		last_out + "/" + run_id + "_w{last_w}_k{last_k}_m{last_m}.tsv"
 	output:
 		last_out + "/" + run_id + "_w{last_w}_k{last_k}_m{last_m}.bed"
-	threads: 1
+	threads: workflow.cores
 	shell:
 		"{shared_script_dir}/blast_like_to_bed.sh {input} {output}"
 

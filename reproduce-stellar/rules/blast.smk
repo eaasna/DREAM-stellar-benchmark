@@ -10,10 +10,12 @@ rule blast_index:
 		"/dev/shm/ref_rep{rep}.fasta.ndb"
 	benchmark:
 		"benchmarks/blast_build_rep{rep}.txt"
+	params:
+		prefix = "/dev/shm/ref_rep{rep}.fasta"
 	threads: workflow.cores
 	shell:
 		"""
-		( /usr/bin/time -a -o {blast_log} -f "%e\t%M\t%x\tblast-db\t{threads}"	makeblastdb -dbtype nucl -in {input})
+		( /usr/bin/time -a -o {blast_log} -f "%e\t%M\t%x\tblast-db\t{threads}"	makeblastdb -dbtype nucl -in {input} -out {params.prefix} )
 		"""
 
 def blast_kmer_size(wildcards):
@@ -25,7 +27,7 @@ def blast_kmer_size(wildcards):
 rule blast_default_search:
 	input:
 		ref = data_dir + "ref_rep{rep}.fasta",
-		db = "/dev/shm/ref_rep{rep}.fasta.ndb",
+		db = ancient("/dev/shm/ref_rep{rep}.fasta.ndb"),
 		query = data_dir + "query/rep{rep}_e{er}.fasta"
 	output:
 		"blast_default/rep{rep}_e{er}.bed"
@@ -44,7 +46,7 @@ rule blast_default_search:
 rule blast_search:
 	input:
 		ref = data_dir + "ref_rep{rep}.fasta",
-		db = "/dev/shm/ref_rep{rep}.fasta.ndb",
+		db = ancient("/dev/shm/ref_rep{rep}.fasta.ndb"),
 		query = data_dir + "query/rep{rep}_e{er}.fasta"
 	output:
 		"blast/rep{rep}_e{er}.bed"
