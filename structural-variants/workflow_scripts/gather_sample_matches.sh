@@ -28,12 +28,17 @@ fi
 if [ -f $sample_inv ]; then
 	rm $sample_inv
 fi
+if [ -f $id.unmapped.fa ]; then
+	rm $id.unmapped.fa
+fi
 while read dir; do
 	#echo $dir
 	if [ $inv_only -eq 1 ]; then	
 		cat $dir/potential_inversions_l${min_len}_e${er}/*.gff > $sample_inv
 	else
+		cat $dir/unmapped.fa >> $id.unmapped.fa
 		cat $dir/l${min_len}_e${er}.gff >> $sample_inv
 	fi
 done < sample_dirs
 rm sample_dirs
+

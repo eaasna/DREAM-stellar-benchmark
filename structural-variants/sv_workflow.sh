@@ -21,10 +21,22 @@ log="log.txt"
 data_dir="/buffer/ag_abi/evelina/1000genomes/phase2/ftp.sra.ebi.ac.uk/vol1/run"
 work_dir="/group/ag_abi/evelina/DREAM-stellar-benchmark/structural-variants"
 
-min_len=50
-er=0.02
-precision=10000
-mask_repeats=1
+if [[ "$#" -ne 3 ]]; then
+        echo "Usage: bash sv_workflow.sh <min len> <error rate> <precision>"
+        exit
+fi
+
+#min_len=150
+#er=0.0267
+#min_len=100
+#er=0.033
+#min_len=50
+#er=0.02
+min_len=$1
+er=$2
+precision=$3
+
+mask_repeats=0
 find_inv=0
 
 ref="/srv/data/evelina/human/GCA_000001405.15_GRCh38_full_analysis_set.fna"
@@ -51,7 +63,7 @@ while read ftp_path; do
 	mapped="$sample_dir/pbmm2.bam"
 	unmapped="$sample_dir/unmapped.bam"
 	fasta="$sample_dir/unmapped.fa"
-	echo "Processing $sample_dir"
+	#echo "Processing $sample_dir"
 	if [ ! -f $fasta ]; then
 		echo "Can not find $fasta"
 		if [ ! -f "$sample_dir/$bam_filename" ]; then
@@ -111,11 +123,14 @@ done < meta/file_paths.txt
 awk -F'/' '{print $8}' meta/file_paths.txt | awk -F'-' '{print $1}' | awk -F'_' '{print $1}' | sort | uniq > meta/sample_ids.txt
 
 while read id; do
-	echo "$id"
-	sample_out="${id}_l${min_len}_e${er}_simple.gff"
+	sample_out="${id}_l${min_len}_e${er}_read_range.gff"
 	if [ ! -f $sample_out ]; then 
-		#echo "${id}_l${min_len}_e${er}_simple.gff does not exist" 
-		./workflow_scripts/gather_sample_matches.sh $min_len $er $id
+		#echo "${id}_l${min_len}_e${er}_read_range.gff does not exist" 
+		#./workflow_scripts/gather_sample_matches.sh $min_len $er $id
+		#if [ ! -s $id.lens.tsv ]; then
+		#	echo "Find read lengths"
+		#	./workflow_scripts/find_read_lens.sh $id
+		#fi
 		./workflow_scripts/convert_valik_gff.sh $min_len $er $id $precision
 		./workflow_scripts/evaluate_accuracy.sh $min_len $er $id $precision
 	fi

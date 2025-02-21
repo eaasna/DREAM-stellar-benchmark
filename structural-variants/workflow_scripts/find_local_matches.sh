@@ -24,8 +24,11 @@ if [ $minlen -eq 50 ]; then
 	echo "threshold $threshold"
 fi
 
-numMatches=200
+numMatches=50
 sortThresh=$((numMatches+1))
+maxPeriod=4
+minLength=24
+
 
 meta="$ref_dir/human_l${minlen}_e${er}_s${s}.bin"
 index="$ref_dir/human_l${minlen}_s${s}.index"
@@ -51,6 +54,7 @@ log="$sample_dir/search_valik.time"
 		--numMatches $numMatches --sortThresh $sortThresh \
 		--without-parameter-tuning --threshold $threshold \
 		--seg-count $seg_count --max-queued-carts 1024 \
+		--repeatPeriod $maxPeriod --repeatLength $minLength \
 		--pattern $minlen \
 		--verbose &> $matches.search.err )
 
