@@ -32,7 +32,7 @@ for test_type in "read_range" "var"; do
         		qstart=$(echo $match | awk '{print $9}'  | awk -F';' '{print $2}' | sed 's/seq2Range=//g' | awk -F',' '{print $1}')
         		qend=$(echo $match | awk '{print $9}'  | awk -F';' '{print $2}' | sed 's/seq2Range=//g' | awk -F',' '{print $2}') 
         		qid=$(echo $match | awk '{print $9}' | awk -F';' '{print $1}')
-			qlen=$(echo $match | awk '{print $9}' | awk -F';' '{print $6}' | sed 's/qlen=//g' | awk '{print $2}' )
+			qlen=$(echo $match | awk '{print $9}' | awk -F';' '{print $6}' | sed 's/qlen=//g' | awk '{print $1}' )
         		qoffset=$(bc <<< $qlen-$qend)
 
 			# convert back to exact var position
