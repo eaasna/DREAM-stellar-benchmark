@@ -1,18 +1,26 @@
 #!/bin/bash
 
-if [[ "$#" -ne 3 ]]; then
-	echo "Usage: bash find_inversion.sh <local_matches> <min_len> <er>"
+if [[ "$#" -ne 4 ]]; then
+	echo "Usage: bash find_inversion.sh <alignments path> <sample> <min_len> <er>"
 	exit 1
 fi
 
-work_dir=$(dirname $1)
-matches=$(basename $1)
-min_len=$2
-er=$3
+matches=$1
+sample=$2
+work_dir="$(dirname $1)/$sample"
+mkdir -p $work_dir
+cd $work_dir
 
-cd $work_dir 
+min_len=$3
+er=$4
+
 inv_dir="potential_inversions_l${min_len}_e${er}"
 mkdir -p $inv_dir
+
+if [ ! -s $matches ]; then
+	echo "Can not read alignments from $matches"
+	exit 1
+fi	
 
 awk '$7 == "+" {print}' $matches > forward_matches.gff
 awk '$7 == "-" {print}' $matches > reverse_matches.gff
@@ -39,11 +47,11 @@ do
 
 			# pick out reference regions that have multiple query matches			
 			forward_ref_region="$ind.dstart.forward.region"
-			awk '{print $4}' curr_forward.gff | cut -c1-3 | sort | uniq -c | awk '$1>1 {print $2}' > $forward_ref_region			
+			awk '{print $4}' curr_forward.gff | rev | cut -c5- | rev | sort | uniq -c | awk '$1>1 {print $2}' > $forward_ref_region			
 			forward_in_ref_region=$(wc -l $forward_ref_region | awk '{print $1}')
 
 			reverse_ref_region="$ind.dstart.reverse.region"
-			awk '{print $4}' curr_reverse.gff | cut -c1-3 | sort | uniq -c | awk '$1>1 {print $2}' > $reverse_ref_region
+			awk '{print $4}' curr_reverse.gff | rev | cut -c5- | rev | sort | uniq -c | awk '$1>1 {print $2}' > $reverse_ref_region
 			reverse_in_ref_region=$(wc -l $reverse_ref_region | awk '{print $1}')
 			
 			# same_ref_region=$((forward_same_ref_region+reverse_same_ref_region))
@@ -73,7 +81,7 @@ do
 					exit 1
 				fi		
 				# require multiple adjacent local matches in the same reference region
-				if [ $forward_range -ge 20 ] && [ $reverse_range -ge 20 ]; then
+				if [ $forward_range -ge 20 ] || [ $reverse_range -ge 20 ]; then
 					#echo -e "\tForward\t$forward_alignments"
 					#echo -e "\tReverse\t$reverse_alignments"
 					#echo "Potential inversions for read $id on $chr"

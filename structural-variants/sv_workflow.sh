@@ -37,7 +37,6 @@ er=$2
 precision=$3
 
 mask_repeats=0
-find_inv=0
 
 ref="/srv/data/evelina/human/GCA_000001405.15_GRCh38_full_analysis_set.fna"
 ref_dna4="/srv/data/evelina/human/unmasked_dna4.fa"
@@ -109,15 +108,6 @@ while read ftp_path; do
 		./workflow_scripts/find_local_matches.sh $ref_dna4 $min_len $er $fasta $local_matches 
 		#>> $log 2>&1
 	fi
-	
-	if [ $find_inv -eq 1 ]; then
-
-		if [ ! -d $sample_dir/potential_inversions_l${min_len}_e${er} ]; then
-			echo -e "\tFinding inversions"
-			./workflow_scripts/find_inversions.sh $local_matches $min_len $er >> $log 2>&1
-		fi
-	fi
-	
 done < meta/file_paths.txt
 
 awk -F'/' '{print $8}' meta/file_paths.txt | awk -F'-' '{print $1}' | awk -F'_' '{print $1}' | sort | uniq > meta/sample_ids.txt

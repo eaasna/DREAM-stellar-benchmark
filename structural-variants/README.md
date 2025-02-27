@@ -1,13 +1,22 @@
-There are two ways to check variant overlap:
+1. bash get_variants.sh 
 
-Using the evaluate c++ executable matches each local match to possible variants
-+ precise variant pos
+Download the structural variant truth set and convert it to a bed format.
 
-cd /buffer/ag_abi/evelina/1000genomes/phase2/ftp.sra.ebi.ac.uk/vol1/run
+2. bash sv_workflow.sh
 
-evaluate --truth ../../../freeze3.sv.alt.meta.bed --test HG00731_l100_e0.033_simple.gff --ref-meta /group/ag_abi/evelina/DREAM-stellar-benchmark/genome-wise/human/dream/meta/b2048_fpr0.005_l100_e1.bin --overlap 0 --min-len 10
+Map all reads and find local alignments for reads that did not map. 
 
-awk '{print $4 + 50}' HG00731_l100_e0.033_simple.fp.gff | rev | cut -c3- | rev | sort | uniq | wc -l
+From the list of local alignments ./workflow_scripts/convert_valik_gff.sh creates two output files.
+- var files with the original local alignments
+- read ranges where the complete read is anchored to the reference based on the local alignments
 
-inversion_calling_accuracy.sh 
-+ collapse alignments that differ by only few basepairs into a single variant
+For variants and read ranges ./workflow_scripts/evaluate_accuracy.sh finds the overlap with known structural variants.
+TODO: something went wrong when converting ranges back to variants.
+
+3. bash inv_workflow.sh 
+
+Analyse the false positive variants to try to detect inversions that were not found in the truth set. 
+
+Find reads that have local alignments on both strands of the reference ./workflow_scripts/find_inversions.sh 
+Further narrow down the set of inversions by requiring multiple local alignments to anchor the read ./workflow_scripts/prepare_igv.sh
+

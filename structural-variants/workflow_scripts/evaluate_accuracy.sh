@@ -41,6 +41,7 @@ for test_type in "read_range" "var"; do
 		mv $fp_file.tmp $fp_file
 	fi
 
+	# join adjacent local alignments into a single variant
 	fp_var_count=$(awk -v r="$rounder" '{print $1 "\t" $4 + r}' $fp_file | rev | cut -c$pn- | rev | sort | uniq | wc -l | awk '{print $1 }')
 
 	echo "Total variants $total_var_count"
