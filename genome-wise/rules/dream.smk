@@ -16,7 +16,7 @@ rule valik_split_ref:
 	output: 
 		ref_meta = dream_out + "/meta/b{b}_fpr{fpr}_l{min_len}_e{er}.bin"
 	params:
-		log = "split_valik.time",
+		log = dream_out + "/split_valik.time",
 		er_rate = get_error_rate
 	shell:
 		"""
@@ -33,7 +33,7 @@ rule valik_build:
 	output: 
 		temp("/dev/shm/" + dream_out + "/b{b}_fpr{fpr}_l{min_len}_e{er}_cmin{cmin}_cmax{cmax}.index")
 	params: 
-		log = "build_valik.time",
+		log = dream_out + "/build_valik.time",
 		is_minimiser = "yes" if minimiser_flag == "--fast" else "no",
 		er_rate = get_error_rate
 	threads: workflow.cores
@@ -69,13 +69,14 @@ rule valik_search:
 		commit_id=$(cd $exec_dir; cat version.md)
 		
 		(timeout 24h /usr/bin/time -a -o {params.log} -f \
-			"%e\t%M\t%x\tvalik-search\t$commit_id\t{wildcards.b}\t{wildcards.fpr}\t{params.er_rate}\t{wildcards.min_len}\t{threads}\t{params.is_minimiser}\t{wildcards.cmin}\t{wildcards.cmax}\t{wildcards.er}\t{repeat_flag}\t{wildcards.bin_ent}\t{wildcards.max_cap}\t{wildcards.max_carts}\t{wildcards.rp}\t{wildcards.rl}" \
+			"%e\t%M\t%x\tvalik-search\t$commit_id\t{wildcards.b}\t{seg_count}\t{wildcards.fpr}\t{params.er_rate}\t{wildcards.min_len}\t{threads}\t{params.is_minimiser}\t{wildcards.cmin}\t{wildcards.cmax}\t{wildcards.er}\t{repeat_flag}\t{wildcards.bin_ent}\t{wildcards.max_cap}\t{wildcards.max_carts}\t{wildcards.rp}\t{wildcards.rl}" \
 			{valik} search {repeat_flag} --bin-entropy-cutoff {wildcards.bin_ent} \
 			 	--split-query --cache-thresholds --numMatches {num_matches} \
 				--sortThresh {sort_thresh} --index {input.ibf} --ref-meta {input.ref_meta} \
 				--query {input.query} --error-rate {params.er_rate} --threads {wildcards.t} \
 				--output {output} --cart-max-capacity {wildcards.max_cap} \
 				--max-queued-carts {wildcards.max_carts} \
+				--verbose --time \
 				--repeatPeriod {wildcards.rp} --repeatLength {wildcards.rl} \
 				&> {output}.search.err)
 
@@ -93,7 +94,7 @@ rule valik_kmer_split_ref:
 	output: 
 		ref_meta = dream_out + "/meta/b{b}_fpr{fpr}_l{min_len}_e{er}_k{k}.bin"
 	params:
-		log = "split_valik.time",
+		log = dream_out + "/split_valik.time",
 		er_rate = get_error_rate
 	shell:
 		"""
@@ -109,7 +110,7 @@ rule valik_kmer_build:
 	output: 
 		temp("/dev/shm/" + dream_out + "/b{b}_fpr{fpr}_l{min_len}_e{er}_cmin{cmin}_cmax{cmax}_k{k}.index")
 	params: 
-		log = "build_valik.time",
+		log = dream_out + "/build_valik.time",
 		is_minimiser = "yes" if minimiser_flag == "--fast" else "no",
 		er_rate = get_error_rate
 	threads: workflow.cores
@@ -145,13 +146,14 @@ rule valik_kmer_search:
 		commit_id=$(cd $exec_dir; cat version.md)
 		
 		(/usr/bin/time -a -o {params.log} -f \
-			"%e\t%M\t%x\tvalik-search\t$commit_id\t{wildcards.b}\t{wildcards.fpr}\t{params.er_rate}\t{wildcards.min_len}\t{wildcards.k}\t{threads}\t{params.is_minimiser}\t{wildcards.cmin}\t{wildcards.cmax}\t{wildcards.er}\t{repeat_flag}\t{wildcards.bin_ent}\t{wildcards.max_cap}\t{wildcards.max_carts}\t{wildcards.rp}\t{wildcards.rl}" \
+			"%e\t%M\t%x\tvalik-search\t$commit_id\t{wildcards.b}\t{seg_count}\t{wildcards.fpr}\t{params.er_rate}\t{wildcards.min_len}\t{wildcards.k}\t{threads}\t{params.is_minimiser}\t{wildcards.cmin}\t{wildcards.cmax}\t{wildcards.er}\t{repeat_flag}\t{wildcards.bin_ent}\t{wildcards.max_cap}\t{wildcards.max_carts}\t{wildcards.rp}\t{wildcards.rl}" \
 			{valik} search {repeat_flag} --bin-entropy-cutoff {wildcards.bin_ent} \
 			 	--split-query --cache-thresholds --numMatches {num_matches} \
 				--sortThresh {sort_thresh} --index {input.ibf} --ref-meta {input.ref_meta} \
 				--query {input.query} --error-rate {params.er_rate} --threads {wildcards.t} \
 				--output {output} --cart-max-capacity {wildcards.max_cap} \
-				--max-queued-carts {wildcards.max_carts} \
+				--max-queued-carts {wildcards.max_carts} --seg-count {seg_count} 
+				--verbose --time \
 				--repeatPeriod {wildcards.rp} --repeatLength {wildcards.rl} \
 				&> {output}.search.err)
 
@@ -188,6 +190,7 @@ rule valik_kmer_threshold_search:
 				--sortThresh {sort_thresh} --index {input.ibf} --ref-meta {input.ref_meta} \
 				--query {input.query} --error-rate {params.er_rate} --threads {threads} \
 				--output {output} --cart-max-capacity {wildcards.max_cap} \
+				--seg-count {seg_count} --verbose --time \
 				--max-queued-carts {wildcards.max_carts} --threshold {wildcards.thresh} \
 				--repeatPeriod {wildcards.rp} --repeatLength {wildcards.rl} \
 				&> {output}.search.err)
@@ -206,7 +209,7 @@ rule valik_shape_split_ref:
 	output: 
 		ref_meta = dream_out + "/meta/b{b}_fpr{fpr}_l{min_len}_e{er}_s{s}.bin"
 	params:
-		log = "split_valik.time",
+		log = dream_out + "/split_valik.time",
 		er_rate = get_error_rate
 	shell:
 		"""
@@ -220,9 +223,9 @@ rule valik_shape_build:
 		ref = dir_path(config["ref"]) + "dna4.fasta",
 		ref_meta = dream_out + "/meta/b{b}_fpr{fpr}_l{min_len}_e{er}_s{s}.bin"
 	output: 
-		temp("/dev/shm/" + dream_out + "/b{b}_fpr{fpr}_l{min_len}_e{er}_cmin{cmin}_cmax{cmax}_s{s}.index")
+		"/dev/shm/" + dream_out + "/b{b}_fpr{fpr}_l{min_len}_e{er}_cmin{cmin}_cmax{cmax}_s{s}.index"
 	params: 
-		log = "build_valik.time",
+		log = dream_out + "/build_valik.time",
 		is_minimiser = "yes" if minimiser_flag == "--fast" else "no",
 		er_rate = get_error_rate
 	threads: workflow.cores
@@ -258,13 +261,13 @@ rule valik_shape_search:
 		commit_id=$(cd $exec_dir; cat version.md)
 		
 		(/usr/bin/time -a -o {params.log} -f \
-			"%e\t%M\t%x\tvalik-search\t$commit_id\t{wildcards.b}\t{wildcards.fpr}\t{params.er_rate}\t{wildcards.min_len}\t{wildcards.s}\tN/A\t{threads}\t{params.is_minimiser}\t{wildcards.cmin}\t{wildcards.cmax}\t{wildcards.er}\t{repeat_flag}\t{wildcards.bin_ent}\t{wildcards.max_cap}\t{wildcards.max_carts}\t1\t1000" \
+			"%e\t%M\t%x\tvalik-search\t$commit_id\t{wildcards.b}\t{seg_count}\t{wildcards.fpr}\t{params.er_rate}\t{wildcards.min_len}\t{wildcards.s}\tN/A\t{threads}\t{params.is_minimiser}\t{wildcards.cmin}\t{wildcards.cmax}\t{wildcards.er}\t{repeat_flag}\t{wildcards.bin_ent}\t{wildcards.max_cap}\t{wildcards.max_carts}\t1\t1000" \
 			{valik} search {repeat_flag} --bin-entropy-cutoff {wildcards.bin_ent} \
 			 	--split-query --cache-thresholds --numMatches {num_matches} \
 				--sortThresh {sort_thresh} --index {input.ibf} --ref-meta {input.ref_meta} \
 				--query {input.query} --error-rate {params.er_rate} --threads {threads} \
-				--output {output} --cart-max-capacity {wildcards.max_cap} \
-				--max-queued-carts {wildcards.max_carts} \
+				--output {output} --cart-max-capacity {wildcards.max_cap} --time --verbose \
+				--max-queued-carts {wildcards.max_carts} --seg-count {seg_count} \
 				&> {output}.search.err)
 
 		truncate -s -1 {params.log}
@@ -295,12 +298,12 @@ rule valik_shape_threshold_search:
 		commit_id=$(cd $exec_dir; cat version.md)
 		
 		(/usr/bin/time -a -o {params.log} -f \
-			"%e\t%M\t%x\tvalik-search\t$commit_id\t{wildcards.b}\t{wildcards.fpr}\t{params.er_rate}\t{wildcards.min_len}\t{wildcards.s}\t{params.thresh}\t{threads}\t{params.is_minimiser}\t{wildcards.cmin}\t{wildcards.cmax}\t{wildcards.er}\t{repeat_flag}\t{wildcards.bin_ent}\t{wildcards.max_cap}\t{wildcards.max_carts}\t1\t1000" \
+			"%e\t%M\t%x\tvalik-search\t$commit_id\t{wildcards.b}\t{seg_count}\t{wildcards.fpr}\t{params.er_rate}\t{wildcards.min_len}\t{wildcards.s}\t{params.thresh}\t{threads}\t{params.is_minimiser}\t{wildcards.cmin}\t{wildcards.cmax}\t{wildcards.er}\t{repeat_flag}\t{wildcards.bin_ent}\t{wildcards.max_cap}\t{wildcards.max_carts}\t1\t1000" \
 			{valik} search {repeat_flag} --bin-entropy-cutoff {wildcards.bin_ent} \
 			 	--split-query --cache-thresholds --numMatches {num_matches} \
 				--sortThresh {sort_thresh} --index {input.ibf} --ref-meta {input.ref_meta} \
 				--query {input.query} --error-rate {params.er_rate} --threads {threads} \
-				--output {output} --cart-max-capacity {wildcards.max_cap} \
+				--output {output} --cart-max-capacity {wildcards.max_cap} --time \
 				--max-queued-carts {wildcards.max_carts} --threshold {params.thresh} \
 				--verbose --seg-count {seg_count} &> {output}.search.err)
 

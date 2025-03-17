@@ -1,8 +1,8 @@
 #-------- DREAM split parameters --------
 ibf_fpr: [0.005]
-ibf_bins: [4096]
+ibf_bins: [64, 128, 256, 512, 1024, 2048, 4096, 8192]
 valik_kmer_lengths: [16]
-valik_shapes: ["1111101001010011011111"]
+valik_shapes: ["11111010010100110111111"]
   #valik_shapes: [, "1110100110010101111"]
 
 #-------- DREAM build parameters --------
@@ -15,10 +15,10 @@ repeat_flag: "--keep-all-repeats"
 repeat_periods: [1]
 repeat_lengths: [1000]
 bin_entropy_cutoffs: [1.0]
-seg_count: 480000
+  #seg_count: 30000
 
 valik_thresh: "N/A"
 
-max_queued_carts: [1024]
-cart_max_capacity: [1000]
+max_queued_carts: [64]
+cart_max_capacity: [2000]
 

@@ -48,13 +48,8 @@ def get_shape_threshold(wildcards):
 	
 	shape_size = len(shape)
 	shape_weight = shape.count("1")
-	
-	if errors == 1:
-		threshold = 13
-	elif errors == 2:
-		threshold = 8
-	else:
-		threshold = 7
+
+	threshold = max(min_len - shape_size + 1 - (errors * shape_weight), 7)
 	print(shape + " has threshold " + str(threshold) + " for " + str(errors) + " errors")	
 	return threshold
 
@@ -113,8 +108,8 @@ wildcard_constraints:
 rule make_all:
 	input:
 #		blast_out + "/blast.stellar.accuracy",
-		dream_out + "/valik.stellar.accuracy.s",
-		expand("dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff", min_len = min_lens, er = errors, rp = repeat_periods, rl = repeat_lengths)
+		dream_out + "/valik.stellar.accuracy.s"
+#		expand("dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff", min_len = min_lens, er = errors, rp = repeat_periods, rl = repeat_lengths),
 #		last_out + "/last.stellar.accuracy",
 #		lastz_out + "/lastz.stellar.accuracy",
 #		blast_out + "/blast.valik.accuracy",
@@ -125,11 +120,11 @@ rule make_all:
 	shell:
 		"echo 'Done'"
 
-include: "rules/prepare.smk"
-include: "rules/stellar.smk"
+#include: "rules/prepare.smk"
+#include: "rules/stellar.smk"
 include: "rules/dream.smk"
-include: "rules/blast.smk"
-include: "rules/lastz.smk"
-include: "rules/last.smk"
+#include: "rules/blast.smk"
+#include: "rules/lastz.smk"
+#include: "rules/last.smk"
 include: "rules/accuracy.smk"
 

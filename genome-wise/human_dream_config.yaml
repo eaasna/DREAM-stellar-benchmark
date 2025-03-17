@@ -2,14 +2,12 @@
 ibf_fpr: [0.005]
 ibf_bins: [4096]
 valik_kmer_lengths: ["NA"]
-  #valik_shapes: ["111101110111011111", "11111111011111111", "11101110101110111"]
-  #valik_shapes: ["111101110111011111"]
-valik_shapes: ["NA"]
+valik_shapes: ["11111010010100110111111"]
 
 #-------- DREAM build parameters --------
 minimiser_flag: "--fast"
 kmer_cmin: 0
-kmer_cmax: [254]
+kmer_cmax: [50]
 
 #-------- DREAM search parameters --------
 repeat_flag: "--keep-best-repeats"
@@ -17,6 +15,7 @@ repeat_periods: [1]
 repeat_lengths: [1000]
 bin_entropy_cutoffs: [1.0]
 valik_thresh: ["NA"]
+  #seg_count: [272000, 550000, 750000]
 
 max_queued_carts: [1024]
-cart_max_capacity: [100, 1000]
+cart_max_capacity: [1000]

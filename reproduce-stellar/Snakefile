@@ -44,8 +44,10 @@ def get_threshold(wildcards):
 	threshold = min_len - shape_size + 1 - (errors * shape_size)
 	if (threshold < 3):
 		threshold = max(min_len - shape_size + 1 - (errors * shape_weight), 6)
+	
 	print("Threshold " + str(threshold) + " for " + str(errors) + " errors")
 	return threshold
+
 
 #-------- Stellar parameters --------
 num_matches = config["num_matches"]
@@ -90,7 +92,7 @@ rule make_all:
 		#"blast_table1.tsv",
 		#"blast_default_table1.tsv",
 		"valik_table1.tsv",
-		"last_table1.tsv"
+		#"last_table1.tsv"
 		#"lastz_table1.tsv"
 		#expand("lastz/rep{rep}_e{er}.bed", rep = repetitions, er = all_error_rates),
 		#expand("last/rep{rep}_e{er}.bed", rep = repetitions, er = all_error_rates),

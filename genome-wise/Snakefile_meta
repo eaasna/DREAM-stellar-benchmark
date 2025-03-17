@@ -1,11 +1,15 @@
+import os
+shared_script_dir=os.getcwd() + "/../scripts"
+
 workdir : config["workdir"]
 stellar = "/group/ag_abi/evelina/stellar3/build/bin/stellar"
 valik = config["valik_exec"]
 
 stellar_out=config["stellar_out"]
 blast_out=config["blast_out"]
-lastz_out=config["lastz_out"]
 dream_out=config["dream_out"]
+lastz_out=config["lastz_out"]
+last_out=config["last_out"]
 
 #-------- split parameters --------
 fpr_list = config["ibf_fpr"]
@@ -29,12 +33,30 @@ if (repeat_flag == "--keep-best-repeats"):
 
 cart_max_capacity = config["cart_max_capacity"]
 max_queued_carts = config["max_queued_carts"]
+#seg_count = config["seg_count"]
 
 num_matches = 20000
 sort_thresh = num_matches + 1
 repeat_periods = config["repeat_periods"]
 repeat_lengths = config["repeat_lengths"]
 search_threads = workflow.cores
+
+def get_shape_threshold(wildcards):
+	min_len = int(wildcards.min_len)
+	shape = wildcards.s
+	errors = int(wildcards.er)
+	
+	shape_size = len(shape)
+	shape_weight = shape.count("1")
+	
+	if errors == 1:
+		threshold = 13
+	elif errors == 2:
+		threshold = 8
+	else:
+		threshold = 7
+	print(shape + " has threshold " + str(threshold) + " for " + str(errors) + " errors")	
+	return threshold
 
 #-------- BLAST parameters --------
 evalues = config["evalues"]
@@ -54,6 +76,13 @@ lastz_seeds = config["lastz_seed"]
 gap_flag = "gapped"
 transition_flag = config["seed_transition"]
 step_length = config["step_length"]
+hsp = config["hsp_thresh"]
+
+#-------- LAST parameters --------
+max_tandem_repeats = 100
+last_index_every = config["last_index_every"]
+last_query_every = config["last_query_every"]
+last_initial_matches = config["last_initial_matches"]
 
 #-------- Evaluation parameters --------
 n = 1
@@ -70,7 +99,7 @@ def dir_path(filename):
 	return os.path.split(filename)[0] + "/"
 
 def get_error_rate(wildcards):
-	return int(wildcards.er) / int(wildcards.min_len)
+	return round(int(wildcards.er) / int(wildcards.min_len), 3)
 
 
 #-------- Shared functions \--------
@@ -78,28 +107,30 @@ def get_error_rate(wildcards):
 wildcard_constraints:
 	k="[0-9][0-9]",
 	er="[0-9]",
-	cmax="[0-9]+"
+	cmax="[0-9]+",
+	max_carts="[0-9]+"
 
 rule make_all:
 	input:
 #		blast_out + "/blast.stellar.accuracy",
+#		dream_out + "/valik.stellar.accuracy.s",
+#		expand("dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff", min_len = min_lens, er = errors, rp = repeat_periods, rl = repeat_lengths),
+#		last_out + "/last.stellar.accuracy",
+#		lastz_out + "/lastz.stellar.accuracy",
 #		blast_out + "/blast.valik.accuracy",
-#		dream_out + "/valik.stellar.accuracy",
+#		dream_out + "/valik.stellar.accuracy"
 #		dream_out + "/valik.blast.accuracy",
 #		dream_out + "/valik.stellar.accuracy.k",
-#		dream_out + "/valik.stellar.accuracy.s"
 #		dream_out + "/valik.blast.accuracy.k"
-#		lastz_out + "/lastz.stellar.accuracy"
-#		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_thresh{thresh}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, thresh = valik_thresh, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads)
-#		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}_rp{rp}_rl{rl}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads, rp = repeat_periods, rl = repeat_lengths)
-		expand(dream_out + "/meta/b{b}_fpr{fpr}_l{min_len}_e{er}.bin", b = bin_list, fpr = fpr_list, min_len = min_lens, er = errors)
+		expand(dream_out + "/meta/b{b}_fpr{fpr}_l{min_len}_e{er}_s{s}.bin", b = bin_list, fpr = fpr_list, min_len = min_lens, er = errors, s = valik_shapes)
 	shell:
 		"echo 'Done'"
 
-include: "rules/prepare.smk"
-include: "rules/stellar.smk"
+#include: "rules/prepare.smk"
+#include: "rules/stellar.smk"
 include: "rules/dream.smk"
-include: "rules/blast.smk"
-include: "rules/lastz.smk"
-include: "rules/accuracy.smk"
+#include: "rules/blast.smk"
+#include: "rules/lastz.smk"
+#include: "rules/last.smk"
+#include: "rules/accuracy.smk"
 
