@@ -37,7 +37,7 @@ rule valik_build:
 
 valik_search_log="valik_search.time"
 f = open(valik_search_log, "a")
-f.write("time\tmem\texit-code\tcommand\tthreads\tbins\tfpr\terror-rate\tmin-len\tshape\tthreshold\tmatches\n")
+f.write("time\tmem\texit-code\tcommand\tthreads\tbins\tseg-count\tfpr\terror-rate\tmin-len\tshape\tthreshold\tmatches\n")
 f.close()
 rule valik_search:
 	input:
@@ -48,14 +48,16 @@ rule valik_search:
 		"valik/rep{rep}_e{er}.gff"
 	threads: workflow.cores
 	params:
-		t = get_threshold
+		t = get_threshold,
+		n = round(num_matches * 1.25),
+		s = round(sort_thresh * 1.25)
 	benchmark: 
 		"benchmarks/valik_rep{rep}_e{er}.txt"
 	shell:
 		"""
-		(/usr/bin/time -a -o {valik_search_log} -f "%e\t%M\t%x\t%C\t{threads}\t{bins}\t{fpr}\t{wildcards.er}\t{min_len}\t{shape}\t{params.t}" \
+		(/usr/bin/time -a -o {valik_search_log} -f "%e\t%M\t%x\t%C\t{threads}\t{bins}\t{seg_count}\t{fpr}\t{wildcards.er}\t{min_len}\t{shape}\t{params.t}" \
 			valik search --keep-best-repeats --split-query --cache-thresholds --verbose \
-				--numMatches {num_matches} --sortThresh {sort_thresh} --time \
+				--numMatches {params.n} --sortThresh {params.s} --time \
 				--index {input.ibf} --ref-meta {input.ref_meta} --query {input.query} \
 				--error-rate {wildcards.er} --threads {threads} --output {output} \
 				--cart-max-capacity {max_capacity} --max-queued-carts {max_carts} \
