@@ -1,11 +1,11 @@
 #-------- workflow parameters --------
-valik_exec: "/group/ag_abi/evelina/valik/build/bin/valik"
+valik_exec: "/group/ag_abi/evelina/valik/work_build/bin/valik"
 workdir: "work"
-stellar_out: "stellar_masked"
-blast_out: "blast_masked"
-dream_out: "dream_masked_k"
+stellar_out: "stellar"
+blast_out: "blast"
+dream_out: "dream"
 lastz_out: "lastz"
-last_out: "last_0_masked"
+last_out: "last"
 
 #-------- input files --------
 ref: "/srv/data/evelina/mouse/ref_concat.fa"

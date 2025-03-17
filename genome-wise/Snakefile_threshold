@@ -42,29 +42,7 @@ repeat_lengths = config["repeat_lengths"]
 search_threads = workflow.cores
 
 def get_shape_threshold(wildcards):
-	min_len = int(wildcards.min_len)
-	shape = wildcards.s
-	errors = int(wildcards.er)
-	
-	shape_size = len(shape)
-	shape_weight = shape.count("1")
-	kmer_lemma = min_len - shape_size + 1 - (errors * shape_weight)
-	threshold = round(kmer_lemma * 1.5)
-	if (threshold < 10):
-		threshold = threshold * 1.2
-	threshold = max(threshold, 11)
-	threshold = min(threshold, min_len - shape_size + 1)
-
-	if errors == 1:
-		threshold = 13
-	elif errors == 2:
-		threshold = 8
-	else:
-		threshold = 7
-	
-	print(shape + " has threshold " + str(threshold) + " for " + str(errors) + " errors")
-	
-	return threshold
+	return config["threshold"]
 
 #-------- BLAST parameters --------
 evalues = config["evalues"]
@@ -121,31 +99,24 @@ wildcard_constraints:
 rule make_all:
 	input:
 #		blast_out + "/blast.stellar.accuracy",
-#		dream_out + "/valik.stellar.accuracy.s",		
+#		dream_out + "/valik.stellar.accuracy.s",
+#		expand("dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff", min_len = min_lens, er = errors, rp = repeat_periods, rl = repeat_lengths),
 #		last_out + "/last.stellar.accuracy",
-#		lastz_out + "/lastz.stellar.accuracy"
+#		lastz_out + "/lastz.stellar.accuracy",
+		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads),
 #		blast_out + "/blast.valik.accuracy",
-#		dream_out + "/valik.stellar.accuracy",
+#		dream_out + "/valik.stellar.accuracy"
 #		dream_out + "/valik.blast.accuracy",
 #		dream_out + "/valik.stellar.accuracy.k",
 #		dream_out + "/valik.blast.accuracy.k"
-#
-#               expand(blast_out + "/" + run_id + "_e{ev}_k{k}.bed", ev = evalues, k = blast_kmer_lengths)
-		# shape manual threshold search
-		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads),
-		expand("dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff", min_len = min_lens, er = errors, rp = repeat_periods, rl = repeat_lengths),
-#		# shape deduce threshold search
-		#expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, rp = repeat_periods, rl = repeat_lengths)
-#		#expand(last_out + "/" + run_id + "_w{last_w}_k{last_k}_m{last_m}.bed", last_w = last_index_every, last_k = last_query_every, last_m = last_initial_matches)
 	shell:
 		"echo 'Done'"
 
-include: "rules/prepare.smk"
-include: "rules/stellar.smk"
+#include: "rules/prepare.smk"
+#include: "rules/stellar.smk"
 include: "rules/dream.smk"
-include: "rules/blast.smk"
-include: "rules/lastz.smk"
-include: "rules/last.smk"
-include: "rules/accuracy.smk"
-
+#include: "rules/blast.smk"
+#include: "rules/lastz.smk"
+#include: "rules/last.smk"
+#include: "rules/accuracy.smk"
 
