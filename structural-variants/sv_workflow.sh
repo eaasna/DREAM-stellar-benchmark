@@ -104,7 +104,7 @@ while read ftp_path; do
 	
 	local_matches="$sample_dir/l${min_len}_e${er}.gff"
 	if [ ! -f $local_matches ]; then
-		echo -e "\tFinding local alignments"
+		echo -e "\tFinding local alignments for $sample_dir"
 		./workflow_scripts/find_local_matches.sh $ref_dna4 $min_len $er $fasta $local_matches 
 		#>> $log 2>&1
 	fi
@@ -112,7 +112,7 @@ done < meta/file_paths.txt
 
 awk -F'/' '{print $8}' meta/file_paths.txt | awk -F'-' '{print $1}' | awk -F'_' '{print $1}' | sort | uniq > meta/sample_ids.txt
 
-while read id; do
+for id in "NA19238" "NA19239" "HG00731" "HG00732"; do
 	sample_out="${id}_l${min_len}_e${er}_read_range.gff"
 	if [ ! -f $sample_out ]; then 
 		#echo "${id}_l${min_len}_e${er}_read_range.gff does not exist" 
@@ -124,5 +124,6 @@ while read id; do
 		./workflow_scripts/convert_valik_gff.sh $min_len $er $id $precision
 		./workflow_scripts/evaluate_accuracy.sh $min_len $er $id $precision
 	fi
-done < meta/sample_ids.txt
+done 
+#< meta/sample_ids.txt
 

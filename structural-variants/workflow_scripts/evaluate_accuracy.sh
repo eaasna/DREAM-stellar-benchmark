@@ -16,17 +16,19 @@ id=$3
 precision=$4
 rounder=$(bc <<< $precision/2)
 pn=${#precision}
+ref_meta="/buffer/ag_abi/evelina/genome-wise/human/dream_gapped/meta/b4096_fpr0.005_l100_e6_s11111010010100110111111.bin"
 
 truth="../../../freeze3.sv.alt.meta.bed"
 
 for test_type in "read_range" "var"; do
 	echo -e "$id\t$test_type"
-	evaluate --ignore-query --ignore-strand --truth $truth --test ${id}_l${min_len}_e${er}_${test_type}.gff --ref-meta /group/ag_abi/evelina/DREAM-stellar-benchmark/genome-wise/human/dream/meta/b2048_fpr0.005_l100_e1.bin --overlap 1 --min-len 50 &> /dev/null
+	evaluate --ignore-query --ignore-strand --truth $truth --test ${id}_l${min_len}_e${er}_${test_type}.gff --ref-meta $ref_meta --overlap 1 --min-len 50 &> /dev/null
 
 	total_var_count=$(grep -v '#' $truth | wc -l | awk '{print $1}')
 	tp_var_count=$(wc -l ${id}_l${min_len}_e${er}_${test_type}.tp.bed | awk '{print $1}')
 
 	fp_file="${id}_l${min_len}_e${er}_${test_type}.fp.gff"
+	
 	if [ "$test_type" == "read_range" ]; then
 		while read match; do
         		qstart=$(echo $match | awk '{print $9}'  | awk -F';' '{print $2}' | sed 's/seq2Range=//g' | awk -F',' '{print $1}')

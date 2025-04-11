@@ -31,7 +31,7 @@ while read match; do
 	qstart=$(echo $match | awk '{print $9}'  | awk -F';' '{print $2}' | sed 's/seq2Range=//g' | awk -F',' '{print $1}')
 	qend=$(echo $match | awk '{print $9}'  | awk -F';' '{print $2}' | sed 's/seq2Range=//g' | awk -F',' '{print $2}')
 	qid=$(echo $match | awk '{print $9}' | awk -F';' '{print $1}')
-	qlen=$(grep $qid $id.lens.tsv | awk '{print $1}')
+	qlen=$(grep $qid $id.lens.tsv | awk '{print $2}')
 	qoffset=$(bc <<< $qlen-$qend)
 	
 	echo $match | awk -v qs="$qstart" -v qo="$qoffset" -v ql="$qlen" '{print $1 "\t" $2 "\t" $3 "\t" $4-qs "\t" $5+qo "\t" $6 "\t" $7 "\t" $8 "\t" $9 ";qlen=" ql}' >> $range_out.tmp
