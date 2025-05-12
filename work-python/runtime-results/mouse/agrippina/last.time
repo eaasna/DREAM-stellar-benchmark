@@ -1,0 +1,6 @@
+time	mem	error-code	command	threads	index-every	query-every	initial-matches	matches
+216.07	14645400	0	lastdb last_agrippina/mouse_vs_fly_w1 -c -P32 -U 100 /srv/data/evelina/mouse/dna4.fasta	32	1
+911.31	15350692	0	lastal -P32 last_agrippina/mouse_vs_fly_w1 /srv/data/evelina/fly/dna4.fasta -k 1 -f BlastTab -m 100	32	1	1	100	68009
+141.48	15351188	0	lastal -P32 last_agrippina/mouse_vs_fly_w1 /srv/data/evelina/fly/dna4.fasta -k 1 -f BlastTab -m 10	32	1	1	10	43916
+813.52	15348412	0	lastal -P32 last_agrippina/mouse_vs_fly_w1 /srv/data/evelina/fly/dna4.fasta -k 1 -f BlastTab -m 100	32	1	1	100	68009
+163.59	15351012	0	lastal -P32 last_agrippina/mouse_vs_fly_w1 /srv/data/evelina/fly/dna4.fasta -k 1 -f BlastTab -m 10	32	1	1	10	43916
