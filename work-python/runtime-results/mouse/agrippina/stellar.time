@@ -1,0 +1,4 @@
+time	mem	error-code	command	min-len	error-rate	repeat-period	repeat-length	matches
+347.95	9662360	0	stellar-search	50	0.02	1	1000	1638
+1010.86	9727576	0	stellar-search	50	0.04	1	1000	3551
+53114.28	5798560	0	stellar-search	50	0.06	1	1000	5179

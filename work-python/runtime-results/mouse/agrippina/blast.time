@@ -1,0 +1,8 @@
+time	mem	error-code	command	threads	evalue	k	matches
+15.98	375048	0	blast-index
+44.49	1664384	0	blast-search	32	10	28	5078
+209.28	2768656	0	blast-search	32	10	16	24298
+55.85	1850780	0	blast-search	32	10	24	8552
+53.93	1832592	0	blast-search	32	10	24	8552
+45.05	1648868	0	blast-search	32	10	28	5078
+210.03	2823304	0	blast-search	32	10	16	24298

@@ -1,0 +1,7 @@
+test-file	matches	truth-set-matches	true-matches	missed	min-overlap	truth-file
+last_agrippina/mouse_vs_fly_w1_k1_m10.bed	43916	1638	1114	.303	25	stellar_agrippina/mouse_vs_fly_l50_e1_rp1_rl1000.gff
+last_agrippina/mouse_vs_fly_w1_k1_m10.bed	43916	3551	2591	.234	25	stellar_agrippina/mouse_vs_fly_l50_e2_rp1_rl1000.gff
+last_agrippina/mouse_vs_fly_w1_k1_m10.bed	43916	5179	3796	.205	25	stellar_agrippina/mouse_vs_fly_l50_e3_rp1_rl1000.gff
+last_agrippina/mouse_vs_fly_w1_k1_m100.bed	68009	1638	1611	0	25	stellar_agrippina/mouse_vs_fly_l50_e1_rp1_rl1000.gff
+last_agrippina/mouse_vs_fly_w1_k1_m100.bed	68009	3551	3418	.001	25	stellar_agrippina/mouse_vs_fly_l50_e2_rp1_rl1000.gff
+last_agrippina/mouse_vs_fly_w1_k1_m100.bed	68009	5179	4841	.003	25	stellar_agrippina/mouse_vs_fly_l50_e3_rp1_rl1000.gff
