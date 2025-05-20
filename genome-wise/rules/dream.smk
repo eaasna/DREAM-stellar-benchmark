@@ -21,7 +21,7 @@ rule valik_split_ref:
 	shell:
 		"""
 		( /usr/bin/time -a -o {params.log} -f "%e\t%M\t%x\tvalik-split\t{wildcards.b}\t{wildcards.fpr}\t{params.er_rate}\t{wildcards.min_len}" \
-			{valik} split {input} --verbose --fpr {wildcards.fpr} --out {output.ref_meta} --kmer 18 \
+			{valik} split {input} --verbose --fpr {wildcards.fpr} --out {output.ref_meta} \
 				--error-rate {params.er_rate}  --pattern {wildcards.min_len} -n {wildcards.b} &> {output}.split.err)
 		"""
 			#{valik} split {input} --verbose --fpr {wildcards.fpr} --out {output.ref_meta} \
@@ -75,7 +75,7 @@ rule valik_search:
 				--sortThresh {sort_thresh} --index {input.ibf} --ref-meta {input.ref_meta} \
 				--query {input.query} --error-rate {params.er_rate} --threads {wildcards.t} \
 				--output {output} --cart-max-capacity {wildcards.max_cap} \
-				--max-queued-carts {wildcards.max_carts} \
+				--max-queued-carts {wildcards.max_carts} --verbose \
 				--repeatPeriod {wildcards.rp} --repeatLength {wildcards.rl} \
 				&> {output}.search.err)
 
@@ -264,7 +264,7 @@ rule valik_shape_search:
 				--sortThresh {sort_thresh} --index {input.ibf} --ref-meta {input.ref_meta} \
 				--query {input.query} --error-rate {params.er_rate} --threads {threads} \
 				--output {output} --cart-max-capacity {wildcards.max_cap} \
-				--max-queued-carts {wildcards.max_carts} \
+				--max-queued-carts {wildcards.max_carts} --verbose \
 				&> {output}.search.err)
 
 		truncate -s -1 {params.log}

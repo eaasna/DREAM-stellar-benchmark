@@ -2,18 +2,20 @@
 valik_exec: "/group/ag_abi/evelina/valik/build/bin/valik"
 workdir: "human"
 stellar_out: "stellar"
+dist_stellar_out: "dist_stellar"
 blast_out: "blast"
-dream_out: "dream_wo_kmers_per_pattern"
+dream_out: "dream_inf_cont"
 lastz_out: "lastz"
 last_out: "last"
 
 #-------- input files --------
 ref: "/srv/data/evelina/human/ref_concat.fa"
-query: "/srv/data/evelina/mouse_query/masked.fa"
+query: "/srv/data/evelina/mouse/ref_concat.fa"
 run_id: "human_vs_mouse"
 
 #-------- Stellar search parameters --------
-errors: [1, 2, 3, 4, 5]
+#errors: [1, 2, 3, 4, 5]
+errors: [7, 8]
 min_len: [100]
 min_overlap: [50]
 

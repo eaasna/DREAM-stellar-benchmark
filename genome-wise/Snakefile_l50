@@ -6,6 +6,7 @@ stellar_out=config["stellar_out"]
 blast_out=config["blast_out"]
 lastz_out=config["lastz_out"]
 dream_out=config["dream_out"]
+last_out=config["last_out"]
 
 #-------- split parameters --------
 fpr_list = config["ibf_fpr"]
@@ -39,6 +40,17 @@ search_threads = workflow.cores
 #-------- BLAST parameters --------
 evalues = config["evalues"]
 blast_kmer_lengths = config["blast_kmer_lengths"]
+
+def get_shape_threshold(wildcards):
+	min_len = int(wildcards.min_len)
+	shape = wildcards.s
+	errors = int(wildcards.er)
+
+	shape_size = len(shape)
+	shape_weight = shape.count("1")
+	kmer_lemma = min_len - shape_size + 1 - (errors * shape_weight)
+	threshold = round(kmer_lemma * 1.5)
+	return threshold	
 
 def percid_from_k(wildcards):
 	min_len = min_lens[0]
@@ -90,16 +102,19 @@ rule make_all:
 #		dream_out + "/valik.stellar.accuracy.s"
 #		dream_out + "/valik.blast.accuracy.k"
 #		lastz_out + "/lastz.stellar.accuracy"
+		last_out + "/last.stellar.accuracy"
 #		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_thresh{thresh}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, thresh = valik_thresh, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads)
 #		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}_rp{rp}_rl{rl}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads, rp = repeat_periods, rl = repeat_lengths)
-		expand(dream_out + "/meta/b{b}_fpr{fpr}_l{min_len}_e{er}.bin", b = bin_list, fpr = fpr_list, min_len = min_lens, er = errors)
+#		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}_rp{rp}_rl{rl}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads, rp = repeat_periods, rl = repeat_lengths)
+#		expand(dream_out + "/meta/b{b}_fpr{fpr}_l{min_len}_e{er}.bin", b = bin_list, fpr = fpr_list, min_len = min_lens, er = errors)
 	shell:
 		"echo 'Done'"
 
-include: "rules/prepare.smk"
-include: "rules/stellar.smk"
-include: "rules/dream.smk"
-include: "rules/blast.smk"
-include: "rules/lastz.smk"
+#include: "rules/prepare.smk"
+#include: "rules/stellar.smk"
+#include: "rules/dream.smk"
+#include: "rules/blast.smk"
+#include: "rules/lastz.smk"
+include: "rules/last.smk"
 include: "rules/accuracy.smk"
 

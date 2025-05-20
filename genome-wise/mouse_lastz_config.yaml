@@ -1,6 +1,6 @@
 #-------- LASTZ parameters --------
 #seed: ["12of19", "14of22", "1110100110010101111"]
 lastz_seed: ["111101001100101011111"]
-seed_transition: "notransition"
-step_length: 3
+seed_transition: "transition"
+step_length: [1, 3, 30]
 hsp_thresh: 3000

@@ -1,11 +1,12 @@
 #-------- workflow parameters --------
 valik_exec: "/group/ag_abi/evelina/valik/build/bin/valik"
-workdir: "work"
-stellar_out: "stellar_masked"
-blast_out: "blast_masked"
-dream_out: "dream_masked"
-lastz_out: "lastz_step3"
-last_out: "last"
+workdir: "mouse"
+stellar_out: "stellar_agrippina"
+dist_stellar_out: "dist_stellar_agrippina"
+blast_out: "blast_agrippina"
+dream_out: "dream_agrippina"
+lastz_out: "lastz_agrippina"
+last_out: "last_agrippina"
 
 #-------- input files --------
 ref: "/srv/data/evelina/mouse/ref_concat.fa"
@@ -13,7 +14,7 @@ query: "/srv/data/evelina/fly/query_concat.fa"
 run_id: "mouse_vs_fly"
 
 #-------- Stellar search parameters --------
-errors: [1, 2, 3]
+errors: [1, 2, 3, 4, 5]
 min_len: [50]
 min_overlap: [25]
 
