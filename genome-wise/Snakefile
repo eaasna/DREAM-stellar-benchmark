@@ -1,11 +1,13 @@
 import os
 shared_script_dir=os.getcwd() + "/../scripts"
+script_dir=os.getcwd() + "/scripts"
 
 workdir : config["workdir"]
 stellar = "/group/ag_abi/evelina/stellar3/build/bin/stellar"
 valik = config["valik_exec"]
 
 stellar_out=config["stellar_out"]
+dist_stellar_out=config["dist_stellar_out"]
 blast_out=config["blast_out"]
 dream_out=config["dream_out"]
 lastz_out=config["lastz_out"]
@@ -49,10 +51,8 @@ def get_shape_threshold(wildcards):
 	shape_size = len(shape)
 	shape_weight = shape.count("1")
 	
-	if errors == 1:
-		threshold = 13
-	elif errors == 2:
-		threshold = 8
+	if errors <= 1:
+		threshold = 12
 	else:
 		threshold = 7
 	print(shape + " has threshold " + str(threshold) + " for " + str(errors) + " errors")	
@@ -113,8 +113,8 @@ wildcard_constraints:
 rule make_all:
 	input:
 #		blast_out + "/blast.stellar.accuracy",
-		dream_out + "/valik.stellar.accuracy.s",
-		expand("dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff", min_len = min_lens, er = errors, rp = repeat_periods, rl = repeat_lengths)
+#		dream_out + "/valik.stellar.accuracy.s.t",
+#		expand("dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff", min_len = min_lens, er = errors, rp = repeat_periods, rl = repeat_lengths),
 #		last_out + "/last.stellar.accuracy",
 #		lastz_out + "/lastz.stellar.accuracy",
 #		blast_out + "/blast.valik.accuracy",
@@ -122,6 +122,8 @@ rule make_all:
 #		dream_out + "/valik.blast.accuracy",
 #		dream_out + "/valik.stellar.accuracy.k",
 #		dream_out + "/valik.blast.accuracy.k"
+		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads)
+
 	shell:
 		"echo 'Done'"
 

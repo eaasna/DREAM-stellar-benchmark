@@ -6,6 +6,7 @@ stellar = "/group/ag_abi/evelina/stellar3/build/bin/stellar"
 valik = config["valik_exec"]
 
 stellar_out=config["stellar_out"]
+dist_stellar_out=config["dist_stellar_out"]
 blast_out=config["blast_out"]
 dream_out=config["dream_out"]
 lastz_out=config["lastz_out"]
@@ -48,20 +49,10 @@ def get_shape_threshold(wildcards):
 	
 	shape_size = len(shape)
 	shape_weight = shape.count("1")
-	kmer_lemma = min_len - shape_size + 1 - (errors * shape_weight)
-	threshold = round(kmer_lemma * 1.5)
-	if (threshold < 10):
-		threshold = threshold * 1.2
-	threshold = max(threshold, 11)
-	threshold = min(threshold, min_len - shape_size + 1)
-
-	if errors == 1:
-		threshold = 13
-	elif errors == 2:
-		threshold = 8
-	else:
-		threshold = 7
-	
+	kmer_lemma = min_len - shape_size + 1 - (errors * shape_weight)	
+	threshold = 18
+	if errors == 8:
+		threshold = 16 
 	print(shape + " has threshold " + str(threshold) + " for " + str(errors) + " errors")
 	
 	return threshold
@@ -114,7 +105,7 @@ def get_error_rate(wildcards):
 
 wildcard_constraints:
 	k="[0-9][0-9]",
-	er="[0-9]",
+	er="[0-9]+",
 	cmax="[0-9]+",
 	max_carts="[0-9]+"
 
@@ -131,11 +122,11 @@ rule make_all:
 #		dream_out + "/valik.blast.accuracy.k"
 #
 #               expand(blast_out + "/" + run_id + "_e{ev}_k{k}.bed", ev = evalues, k = blast_kmer_lengths)
-		# shape manual threshold search
-		# expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads),
-		expand("dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff", min_len = min_lens, er = errors, rp = repeat_periods, rl = repeat_lengths),
-#		# shape deduce threshold search
-		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, rp = repeat_periods, rl = repeat_lengths)
+# shape manual threshold search
+		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads),
+#		expand("dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff", min_len = min_lens, er = errors, rp = repeat_periods, rl = repeat_lengths),
+# shape deduce threshold search
+#		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts)
 #		expand(last_out + "/" + run_id + "_w{last_w}_k{last_k}_m{last_m}.bed", last_w = last_index_every, last_k = last_query_every, last_m = last_initial_matches)
 	shell:
 		"echo 'Done'"

@@ -1,4 +1,4 @@
-stellar_log = "stellar.time"
+stellar_log = stellar_out + "/stellar.time"
 f = open(stellar_log, "a")
 f.write("time\tmem\terror-code\tcommand\tmin-len\terror-rate\trepeat-period\trepeat-length\tmatches\n")
 f.close()
@@ -24,9 +24,9 @@ rule stellar:
 		wc -l {output} | awk '{{print "\t" $1}}' >> {stellar_log}
 		"""
 
-dist_stellar_log = "dist_stellar.time"
+dist_stellar_log = dist_stellar_out + "/dist_stellar.time"
 f = open(dist_stellar_log, "a")
-f.write("time\tmem\terror-code\tcommand\tmin-len\terror-rate\trepeat-period\trepeat-length\tmatches\n")
+f.write("time\tmem\terror-code\tcommand\tmin-len\terror-rate\tthreads\tmatches\n")
 f.close()
 
 rule distribute_stellar:
@@ -40,7 +40,7 @@ rule distribute_stellar:
 		er_rate = get_error_rate
 	shell:
 		"""	
-		(timeout 24h /usr/bin/time -a -o {dist_stellar_log} -f "%e\t%M\t%x\t%C\t{threads}\t{wildcards.er}" \
+		(timeout 24h /usr/bin/time -a -o {dist_stellar_log} -f "%e\t%M\t%x\t%C\t{threads}\t{wildcards.min_len}\t{wildcards.er}\t{threads}" \
 			{valik} search  --split-query --verbose \
 				--numMatches {num_matches} --sortThresh {sort_thresh} --time \
 				--ref-meta {input.ref_meta} --query {input.query} \

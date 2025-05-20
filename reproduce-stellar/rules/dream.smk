@@ -3,6 +3,16 @@ f = open(valik_split_log, "a")
 f.write("time\tmem\texit-code\tcommand\tthreads\tbins\tfpr\terror-rate\tmin-len\tshape\n")
 f.close()
 
+rule valik_split_ref_deduce:
+	input:
+		ref = data_dir + "ref_rep{rep}.fasta"
+	output: 
+		ref_meta = "meta/deduce_ref_rep{rep}_e{er}.bin"
+	threads: 1
+	shell:
+		"""
+		( /usr/bin/time -a -o {valik_split_log} -f "%e\t%M\t%x\t%C\t{threads}\t{bins}\t{fpr}\t{wildcards.er}\t{min_len}\t{shape}" valik split {input.ref} --verbose --out {output.ref_meta} --error-rate {wildcards.er} --pattern {min_len} -n {bins} --fpr {fpr} &> {output}.split.err )
+		"""
 rule valik_split_ref:
 	input:
 		ref = data_dir + "ref_rep{rep}.fasta"

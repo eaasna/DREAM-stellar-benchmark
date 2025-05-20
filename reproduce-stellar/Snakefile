@@ -80,7 +80,7 @@ def get_seed(wildcards):
 
 rule make_all:
 	input:
-		#expand("meta/ref_rep{rep}_e{er}.bin", rep = repetitions, er = all_error_rates)	
+		expand("meta/deduce_ref_rep{rep}_e{er}.bin", rep = repetitions, er = all_error_rates)	
 		#expand("ref_rep{rep}.fasta", rep = repetitions)
 		#expand("/dev/shm/rep{rep}.index", rep = repetitions, er = error_rates)
 		#expand("evaluation/valik_rep{rep}_e{er}.tsv", rep = repetitions, er = error_rates),
@@ -89,8 +89,8 @@ rule make_all:
 		#"dist_stellar_table1.tsv",
 		#"blast_table1.tsv",
 		#"blast_default_table1.tsv",
-		"valik_table1.tsv",
-		"last_table1.tsv"
+		#"valik_table1.tsv",
+		#"last_table1.tsv"
 		#"lastz_table1.tsv"
 		#expand("lastz/rep{rep}_e{er}.bed", rep = repetitions, er = all_error_rates),
 		#expand("last/rep{rep}_e{er}.bed", rep = repetitions, er = all_error_rates),
