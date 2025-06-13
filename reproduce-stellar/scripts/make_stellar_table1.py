@@ -31,6 +31,7 @@ for rep in range(n):
 
         if (log_build_time):
             build_benchmark_file = "benchmarks/" + prefix + "_build_rep" + str(rep) + "_e" + str(er) + ".txt"
+            build_benchmark_file = "benchmarks/" + prefix + "_build_rep" + str(rep) + ".txt"
             if ("last" in prefix): 
                 build_benchmark_file = "benchmarks/" + prefix + "_build_rep" + str(rep) + ".txt"
             print(build_benchmark_file)

@@ -1,10 +1,10 @@
 #-------- workflow parameters --------
-valik_exec: "/group/ag_abi/evelina/valik/build/bin/valik"
+valik_exec: "/group/ag_abi/evelina/valik/work_build/bin/valik"
 workdir: "human"
 stellar_out: "stellar"
 dist_stellar_out: "dist_stellar"
 blast_out: "blast"
-dream_out: "dream_inf_cont"
+dream_out: "dream_gapped24mer"
 lastz_out: "lastz"
 last_out: "last"
 
@@ -15,7 +15,7 @@ run_id: "human_vs_mouse"
 
 #-------- Stellar search parameters --------
 #errors: [1, 2, 3, 4, 5]
-errors: [7, 8]
+errors: [1, 2, 3, 4, 5, 6]
 min_len: [100]
 min_overlap: [50]
 

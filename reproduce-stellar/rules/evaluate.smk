@@ -52,7 +52,7 @@ rule dream_accuracy:
 	input:
 		truth = "dist_stellar/rep{rep}_e{er}.gff",
 		search = "valik/rep{rep}_e{er}.gff",
-		ref_meta = "meta/ref_rep{rep}_e{er}.bin"
+		ref_meta = "/dev/shm/ref_rep{rep}.bin"
 	output:
 		"evaluation/valik_rep{rep}_e{er}.tsv"
 	shell:

@@ -14,7 +14,7 @@ lastz_out=config["lastz_out"]
 last_out=config["last_out"]
 
 #-------- split parameters --------
-fpr_list = config["ibf_fpr"]
+fpr = config["ibf_fpr"]
 bin_list = config["ibf_bins"]
 min_lens = config["min_len"]
 
@@ -43,20 +43,6 @@ repeat_periods = config["repeat_periods"]
 repeat_lengths = config["repeat_lengths"]
 search_threads = workflow.cores
 
-def get_shape_threshold(wildcards):
-	min_len = int(wildcards.min_len)
-	shape = wildcards.s
-	errors = int(wildcards.er)
-	
-	shape_size = len(shape)
-	shape_weight = shape.count("1")
-	
-	if errors <= 1:
-		threshold = 12
-	else:
-		threshold = 7
-	print(shape + " has threshold " + str(threshold) + " for " + str(errors) + " errors")	
-	return threshold
 
 #-------- BLAST parameters --------
 evalues = config["evalues"]
@@ -98,9 +84,11 @@ import os
 def dir_path(filename):
 	return os.path.split(filename)[0] + "/"
 
+def get_max_error_rate(wildcards):
+	return round(np.max(errors) / int(wildcards.min_len), 3)
+
 def get_error_rate(wildcards):
 	return round(int(wildcards.er) / int(wildcards.min_len), 3)
-
 
 #-------- Shared functions \--------
 

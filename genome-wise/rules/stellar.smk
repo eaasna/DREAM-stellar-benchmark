@@ -31,7 +31,7 @@ f.close()
 
 rule distribute_stellar:
 	input:
-		ref_meta = expand(dream_out + "/meta/b{b}_fpr{fpr}_l{{min_len}}_e{{er}}_s{s}.bin", b = bin_list[0], fpr = fpr_list[0], s = valik_shapes[0]),
+		ref_meta = "/dev/shm/" + dream_out + "/b" + str(bin_list[0]) + "_l" + str(min_lens[0]) + "_cmin" + str(cmin_list[0]) + "_cmax" + str(cmax_list[0]) + ".bin",		
 		query = ancient(dir_path(config["query"]) + "dna4.fasta")
 	output: 
 		"dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff"
