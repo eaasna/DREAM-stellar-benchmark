@@ -84,7 +84,7 @@ rule make_all:
 		"valik_table1.tsv"
 		#expand(data_dir + "ref_rep{rep}.fasta", rep = repetitions),
 		#expand(data_dir + "query/rep{rep}_e{er}.fasta", rep = repetitions, er = [0, 0.02])
-		#expand("valik/rep{rep}_e{er}.gff", rep = repetitions, er = [0.08, 0.1])
+		#expand("valik/rep{rep}_e{er}.gff", rep = repetitions, er = all_error_rates)
 		#"last_table1.tsv"
 		#"lastz_table1.tsv"
 		#expand("lastz/rep{rep}_e{er}.bed", rep = repetitions, er = all_error_rates),
