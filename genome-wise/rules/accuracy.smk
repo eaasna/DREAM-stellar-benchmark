@@ -32,10 +32,10 @@ rule valik_compare_blast:
 		done
 		"""
 
-rule valik_kmer_compare_blast:
+rule valik_shape_compare_blast:
 	input:
 		ref_meta = "/dev/shm/" + dream_out + "/b" + str(bin_list[0]) + "_l" + str(min_lens[0]) + "_cmin" + str(cmin_list[0]) + "_cmax" + str(cmax_list[0]) + ".bin",
-		test_files = expand(dream_out + "/b{b}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_k{k}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}_rp{rp}_rl{rl}.gff", b = bin_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, k = valik_kmer_lengths, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads, rp = repeat_periods, rl = repeat_lengths),
+		test_files = expand(dream_out + "/b{b}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}.gff", b = bin_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = shape, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts),
 		truth_files = expand(blast_out + "/" + run_id + "_e{ev}_k{k}.bed", ev = evalues, k = blast_kmer_lengths)
 	output:
 		dream_out + "/valik.blast.accuracy.k"
@@ -70,7 +70,7 @@ rule valik_compare_stellar:
 	input:
 		ref_meta = "/dev/shm/" + dream_out + "/b" + str(bin_list[0]) + "_l" + str(min_lens[0]) + "_cmin" + str(cmin_list[0]) + "_cmax" + str(cmax_list[0]) + ".bin",
 
-		test_files = expand(dream_out + "/b{b}_l{{min_len}}_cmin{cmin}_cmax{cmax}_e{{er}}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}_rp{rp}_rl{rl}.gff", b = bin_list, cmin = cmin_list, cmax = cmax_list, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads, rp = repeat_periods, rl = repeat_lengths),
+		test_files = expand(dream_out + "/b{b}_l{{min_len}}_cmin{cmin}_cmax{cmax}_e{{er}}_ent{bin_ent}_cap{max_cap}_carts{max_carts}.gff", b = bin_list, cmin = cmin_list, cmax = cmax_list, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads, rp = repeat_periods, rl = repeat_lengths),
 		truth_file = stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp" + str(repeat_periods[0]) + "_rl" + str(repeat_lengths[0]) + ".gff"
 	output:
 		temp(dream_out + "/valik.accuracy.l{min_len}.e{er}")
@@ -107,6 +107,47 @@ rule valik_gather_stellar_accuracy:
 	shell:
 		"cat {input} > {output}"
 
+
+rule valik_shape_compare_stellar:
+	input:
+		ref_meta = "/dev/shm/" + dream_out + "/b" + str(bin_list[0]) + "_l" + str(min_lens[0]) + "_s" + shape[0] + "_cmin" + str(cmin_list[0]) + "_cmax" + str(cmax_list[0]) + ".bin",
+
+		test_files = expand(dream_out + "/b{b}_l{{min_len}}_s{s}_cmin{cmin}_cmax{cmax}_e{{er}}_ent{bin_ent}_cap{max_cap}_carts{max_carts}.gff", b = bin_list, s = shape, cmin = cmin_list, cmax = cmax_list, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts),
+		truth_file = stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp" + str(repeat_periods[0]) + "_rl" + str(repeat_lengths[0]) + ".gff"
+	output:
+		temp(dream_out + "/valik.accuracy.l{min_len}.e{er}.s")
+	threads:
+		workflow.cores
+	params:
+		min_len = min(min_lens),
+		min_overlap = 10,
+	shell:
+		"""
+		echo -e "test-file\tmatches\ttruth-set-matches\ttrue-matches\tmissed\tmin-overlap\ttruth-file" > {output}
+		
+		for test in {input.test_files}
+		do
+			match_count=`wc -l $test | awk '{{print $1}}'`
+			echo -e "$test\t$match_count\t" >> {output}
+			
+			truncate -s -1 {output}
+			{shared_script_dir}/search_accuracy.sh {input.truth_file} $test {params.min_len} {params.min_overlap} {input.ref_meta} tmp.log
+			tail -n 1 tmp.log >> {output}
+			rm tmp.log
+	
+			truncate -s -1 {output}
+			echo -e "\t{params.min_overlap}\t{input.truth_file}" >> {output}
+		done
+		"""
+
+rule valik_shape_gather_stellar_accuracy:
+	input:
+		expand(dream_out + "/valik.accuracy.l{min_len}.e{er}.s", min_len = min_lens, er = errors)
+	output:
+		dream_out + "/valik.stellar.accuracy.s"
+	threads: 1
+	shell:
+		"cat {input} > {output}"
 
 rule blast_compare_stellar:
 	input:
@@ -255,7 +296,7 @@ rule last_compare_stellar:
 				truncate -s -1 {output}
 				{shared_script_dir}/search_accuracy.sh $truth $test {params.min_len} {params.min_overlap} {input.ref_meta} tmp.log
 				
-				min_len=$(echo $truth | awk -F'_l' '{{print $2}}' | awk -F'_' '{{print $1}}')
+				min_len=$(echo $truth | awk -F'_l' '{{prin $2}}' | awk -F'_' '{{print $1}}')
 				err=$(echo $truth | awk -F'_e' '{{print $2}}' | awk -F'_' '{{print $1}}')
 				
 				stellar_id="{last_out}/l${{min_len}}_e${{err}}"

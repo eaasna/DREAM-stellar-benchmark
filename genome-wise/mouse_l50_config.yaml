@@ -1,12 +1,12 @@
 #-------- workflow parameters --------
-valik_exec: "/group/ag_abi/evelina/valik/build/bin/valik"
+valik_exec: "/group/ag_abi/evelina/valik/work_build/bin/dream-stellar"
 workdir: "mouse"
 stellar_out: "stellar_agrippina"
-dist_stellar_out: "dist_stellar_agrippina"
+dist_stellar_out: "dist_stellar"
 blast_out: "blast_agrippina"
 dream_out: "dream_agrippina"
 lastz_out: "lastz_agrippina"
-last_out: "last_agrippina"
+last_out: "last_test"
 
 #-------- input files --------
 ref: "/srv/data/evelina/mouse/ref_concat.fa"
