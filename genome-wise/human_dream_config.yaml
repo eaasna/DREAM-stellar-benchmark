@@ -1,19 +1,22 @@
 #-------- DREAM split parameters --------
-ibf_fpr: [0.005]
+ibf_fpr: 0.005
 ibf_bins: [4096]
 valik_kmer_lengths: ["NA"]
-valik_shapes: ["11111010010100110111111"]
+  #valik_shapes: ["1111011010110101101111"]
+  #valik_shapes: ["11111010010100110111111"]
+valik_shapes: ["1111011010110101101111"]
+  #valik_shapes: ["111101011010110101111"]
 
 #-------- DREAM build parameters --------
 minimiser_flag: "--fast"
-kmer_cmin: 0
+kmer_cmin: [0]
 kmer_cmax: [254]
 
 #-------- DREAM search parameters --------
 repeat_flag: "--keep-best-repeats"
 repeat_periods: [1]
 repeat_lengths: [1000]
-bin_entropy_cutoffs: [1.0, 0.5]
+bin_entropy_cutoffs: [1.0]
 valik_thresh: ["NA"]
 
 max_queued_carts: [1024]

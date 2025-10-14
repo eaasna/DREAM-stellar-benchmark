@@ -1,0 +1,17 @@
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR384/ERR3840017/HG00731-hifi-r54329U_20190528_230410-A01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR386/ERR3861392/HG00732-hifi-r54329U_20190703_201135-C01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR384/ERR3840019/HG00731-hifi-r54329U_20190531_173856-B01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR384/ERR3840020/HG00731-hifi-r54329U_20190604_223930-B01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR498/ERR4987503/HG00732-hifi-r54329U_20200528_195409-A01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR496/ERR4968414/NA19239_20191205_CLEE_m64039_190823_190750.ccs.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR496/ERR4968411/NA19238_20191205_CLEE_m64039_190830_040857.ccs.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR386/ERR3861388/HG00732-hifi-r54329U_20190604_223930-A01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR386/ERR3861393/HG00732-hifi-r54329U_20190830_234003-B01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR384/ERR3840021/HG00731-hifi-r54329U_20190906_202809-A01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR498/ERR4987504/HG00732-hifi-r64076_20200601_233545-A01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR496/ERR4968415/NA19239_20191205_CLEE_m54336U_191005_142313.ccs.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR384/ERR3840018/HG00731-hifi-r54329U_20190531_173856-A01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR498/ERR4987505/HG00732-hifi-r64076_20200601_233545-B01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR386/ERR3861391/HG00732-hifi-r54329U_20190607_183639-E01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR386/ERR3861390/HG00732-hifi-r54329U_20190607_183639-D01.bam
+ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR386/ERR3861389/HG00732-hifi-r54329U_20190607_183639-C01.bam

@@ -13,18 +13,16 @@ lastz_out=config["lastz_out"]
 last_out=config["last_out"]
 
 #-------- split parameters --------
-fpr_list = config["ibf_fpr"]
+fpr = config["ibf_fpr"]
 bin_list = config["ibf_bins"]
 min_lens = config["min_len"]
-
-#-------- build parameters --------
 minimiser_flag = config["minimiser_flag"]
 cmin_list = config["kmer_cmin"]
 cmax_list = config["kmer_cmax"]
+shape = config["valik_shapes"]
 
 #-------- search parameters --------
 valik_kmer_lengths = config["valik_kmer_lengths"]
-valik_shapes = config["valik_shapes"]
 valik_thresh = config["valik_thresh"]
 errors = config["errors"]
 repeat_flag = config["repeat_flag"]
@@ -41,21 +39,6 @@ sort_thresh = num_matches + 1
 repeat_periods = config["repeat_periods"]
 repeat_lengths = config["repeat_lengths"]
 search_threads = workflow.cores
-
-def get_shape_threshold(wildcards):
-	min_len = int(wildcards.min_len)
-	shape = wildcards.s
-	errors = int(wildcards.er)
-	
-	shape_size = len(shape)
-	shape_weight = shape.count("1")
-	kmer_lemma = min_len - shape_size + 1 - (errors * shape_weight)	
-	threshold = 18
-	if errors == 8:
-		threshold = 16 
-	print(shape + " has threshold " + str(threshold) + " for " + str(errors) + " errors")
-	
-	return threshold
 
 #-------- BLAST parameters --------
 evalues = config["evalues"]
@@ -100,6 +83,8 @@ def dir_path(filename):
 def get_error_rate(wildcards):
 	return round(int(wildcards.er) / int(wildcards.min_len), 3)
 
+def get_max_error_rate(wildcards):
+        return round(max(errors) / int(wildcards.min_len), 3)
 
 #-------- Shared functions \--------
 
@@ -107,7 +92,9 @@ wildcard_constraints:
 	k="[0-9][0-9]",
 	er="[0-9]+",
 	cmax="[0-9]+",
-	max_carts="[0-9]+"
+	max_carts="[0-9]+",
+	shape="[10]+",
+	min_len="[0-9]+"
 
 rule make_all:
 	input:
@@ -121,13 +108,16 @@ rule make_all:
 #		dream_out + "/valik.stellar.accuracy.k",
 #		dream_out + "/valik.blast.accuracy.k"
 #
-#               expand(blast_out + "/" + run_id + "_e{ev}_k{k}.bed", ev = evalues, k = blast_kmer_lengths)
+#		expand("/dev/shm/" + dream_out + "/b{b}_l{min_len}_cmin{cmin}_cmax{cmax}.bin", b = bin_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list)
+#		expand(dream_out + "/b{b}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_ent{bin_ent}_cap{max_cap}_carts{max_carts}.gff", b = bin_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts)
+#		expand(dream_out + "/b{b}_l{min_len}_s{s}_cmin{cmin}_cmax{cmax}_e{er}_ent{bin_ent}_cap{max_cap}_carts{max_carts}.gff", b = bin_list, min_len = min_lens, s = shape, cmin = cmin_list, cmax = cmax_list, er = errors, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts)
+		expand(blast_out + "/" + run_id + "_e{ev}_k{k}.bed", ev = evalues, k = blast_kmer_lengths),
 # shape manual threshold search
-		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}_t{t}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts, t = search_threads),
 #		expand("dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff", min_len = min_lens, er = errors, rp = repeat_periods, rl = repeat_lengths),
 # shape deduce threshold search
-#		expand(dream_out + "/b{b}_fpr{fpr}_l{min_len}_cmin{cmin}_cmax{cmax}_e{er}_s{s}_ent{bin_ent}_cap{max_cap}_carts{max_carts}.gff", b = bin_list, fpr = fpr_list, min_len = min_lens, cmin = cmin_list, cmax = cmax_list, er = errors, s = valik_shapes, bin_ent = bin_entropy_cutoffs, max_cap = cart_max_capacity, max_carts = max_queued_carts)
-#		expand(last_out + "/" + run_id + "_w{last_w}_k{last_k}_m{last_m}.bed", last_w = last_index_every, last_k = last_query_every, last_m = last_initial_matches)
+		expand(last_out + "/" + run_id + "_w{last_w}_k{last_k}_m{last_m}.bed", last_w = last_index_every, last_k = last_query_every, last_m = last_initial_matches)
+#		expand(stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff", min_len = min_lens, er = errors, rp = repeat_periods, rl = repeat_lengths),
+#		expand(lastz_out + "/" + run_id + "_s{s}_" + gap_flag + "_" + transition_flag + "_{sl}.tsv", s = lastz_seeds, sl = step_length)
 	shell:
 		"echo 'Done'"
 

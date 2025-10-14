@@ -7,9 +7,12 @@ n = config["repeat"]
 repetitions = list(range(n))
 print("Number of repetitions " + str(len(repetitions)))
 
-all_error_rates = [0, 0.02, 0.04, 0.06, 0.08, 0.1]
+#all_error_rates = [0.02, 0.04, 0.06, 0.08, 0.1]
+all_error_rates = [0.02, 0.04, 0.06, 0.08, 0.1]
 #all_error_rates = [0.08]
-error_rates = [0, 0.02, 0.04, 0.06]
+error_rates = [0.02, 0.04, 0.06, 0.08, 0.1]
+#error_rates = [0, 0.02]
+max_er = max(all_error_rates)
 
 # local match lengths 
 min_len = 50
@@ -35,17 +38,6 @@ seg_count = config["seg_count"]
 overlap = min_len - 1
 max_capacity = config["cart_max_capacity"]
 max_carts = config["max_queued_carts"]
-shape = "1110100101001101111"
-shape_weight = shape.count("1")
-shape_size = len(shape)
-
-def get_threshold(wildcards):
-	errors = round(float(wildcards.er) * min_len)
-	threshold = min_len - shape_size + 1 - (errors * shape_size)
-	if (threshold < 3):
-		threshold = max(min_len - shape_size + 1 - (errors * shape_weight), 6)
-	print("Threshold " + str(threshold) + " for " + str(errors) + " errors")
-	return threshold
 
 #-------- Stellar parameters --------
 num_matches = config["num_matches"]
@@ -80,16 +72,19 @@ def get_seed(wildcards):
 
 rule make_all:
 	input:
-		expand("meta/deduce_ref_rep{rep}_e{er}.bin", rep = repetitions, er = all_error_rates)	
+		#expand("meta/deduce_ref_rep{rep}_e{er}.bin", rep = repetitions, er = all_error_rates)	
 		#expand("ref_rep{rep}.fasta", rep = repetitions)
-		#expand("/dev/shm/rep{rep}.index", rep = repetitions, er = error_rates)
+		#expand("/dev/shm/ref_rep{rep}.index", rep = repetitions, er = error_rates)
 		#expand("evaluation/valik_rep{rep}_e{er}.tsv", rep = repetitions, er = error_rates),
 		#expand("evaluation/stellar_rep{rep}_e{er}.tsv", rep = repetitions, er = error_rates)
 		#"stellar_table1.tsv",
 		#"dist_stellar_table1.tsv",
 		#"blast_table1.tsv",
 		#"blast_default_table1.tsv",
-		#"valik_table1.tsv",
+		"valik_table1.tsv"
+		#expand(data_dir + "ref_rep{rep}.fasta", rep = repetitions),
+		#expand(data_dir + "query/rep{rep}_e{er}.fasta", rep = repetitions, er = [0, 0.02])
+		#expand("valik/rep{rep}_e{er}.gff", rep = repetitions, er = [0.08, 0.1])
 		#"last_table1.tsv"
 		#"lastz_table1.tsv"
 		#expand("lastz/rep{rep}_e{er}.bed", rep = repetitions, er = all_error_rates),

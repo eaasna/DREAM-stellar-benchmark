@@ -1,6 +1,6 @@
 rule mask_query:
 	input:
-		config["query"]
+		ancient(config["query"])
 	output:
 		dir_path(config["query"]) + "masked.fasta"
 	shell:
@@ -8,7 +8,7 @@ rule mask_query:
 
 rule ref_to_dna4:
 	input:
-		config["ref"]
+		ancient(config["ref"])
 	output:
 		dir_path(config["ref"]) + "dna4.fasta"
 	shell:      
@@ -16,7 +16,7 @@ rule ref_to_dna4:
 
 rule query_to_dna4:
 	input:
-		dir_path(config["query"]) + "masked.fasta"
+		ancient(dir_path(config["query"]) + "masked.fasta")
 	output:
 		dir_path(config["query"]) + "dna4.fasta"
 	shell:      

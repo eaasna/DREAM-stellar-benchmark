@@ -31,10 +31,10 @@ f.close()
 
 rule distribute_stellar:
 	input:
-		ref_meta = expand(dream_out + "/meta/b{b}_fpr{fpr}_l{{min_len}}_e{{er}}_s{s}.bin", b = bin_list[0], fpr = fpr_list[0], s = valik_shapes[0]),
+		ibf = "/dev/shm/" + dream_out + "/b" + str(bin_list[0]) + "_l" + str(min_lens[0]) + "_cmin" + str(cmin_list[0]) + "_cmax" + str(cmax_list[0]) + ".bin",		
 		query = ancient(dir_path(config["query"]) + "dna4.fasta")
 	output: 
-		"dist_" + stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff"
+		dist_stellar_out + "/" + run_id + "_l{min_len}_e{er}_rp{rp}_rl{rl}.gff"
 	threads: workflow.cores
 	params: 
 		er_rate = get_error_rate
@@ -43,7 +43,7 @@ rule distribute_stellar:
 		(timeout 24h /usr/bin/time -a -o {dist_stellar_log} -f "%e\t%M\t%x\t%C\t{threads}\t{wildcards.min_len}\t{wildcards.er}\t{threads}" \
 			{valik} search  --split-query --verbose \
 				--numMatches {num_matches} --sortThresh {sort_thresh} --time \
-				--ref-meta {input.ref_meta} --query {input.query} \
+				--index {input.ibf} --query {input.query} \
 				--error-rate {params.er_rate} --threads {threads} --output {output} \
 				--stellar-only &> {output}.err)
 		
