@@ -1,0 +1,44 @@
+HG00731_l150_e0.0267_read_range.gff does not exist
+HG00731 read_range
+Total variants 106789
+True positive variants 28
+False positive variants 17 (precision 1000)
+Fraction of new variants .377
+HG00731 var
+Total variants 106789
+True positive variants 0
+False positive variants 25 (precision 1000)
+Fraction of new variants 1.000
+HG00732_l150_e0.0267_read_range.gff does not exist
+HG00732 read_range
+Total variants 106789
+True positive variants 148
+False positive variants 41 (precision 1000)
+Fraction of new variants .216
+HG00732 var
+Total variants 106789
+True positive variants 0
+False positive variants 53 (precision 1000)
+Fraction of new variants 1.000
+NA19238_l150_e0.0267_read_range.gff does not exist
+NA19238 read_range
+Total variants 106789
+True positive variants 66
+False positive variants 48 (precision 1000)
+Fraction of new variants .421
+NA19238 var
+Total variants 106789
+True positive variants 5
+False positive variants 77 (precision 1000)
+Fraction of new variants .939
+NA19239_l150_e0.0267_read_range.gff does not exist
+NA19239 read_range
+Total variants 106789
+True positive variants 1
+False positive variants 6 (precision 1000)
+Fraction of new variants .857
+NA19239 var
+Total variants 106789
+True positive variants 0
+False positive variants 7 (precision 1000)
+Fraction of new variants 1.000
