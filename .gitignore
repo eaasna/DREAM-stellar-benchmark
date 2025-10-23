@@ -17,3 +17,7 @@ read-mapping/*/*.fastq
 */*/.snakemake/*
 */*/*/.snakemake/*
 
+compare_in_igv/*
+.ipynb_checkpoints/
+
+*.bin
