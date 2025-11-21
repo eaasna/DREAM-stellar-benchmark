@@ -5,8 +5,8 @@ f.close()
 
 rule distribute_stellar:
 	input:
-		index = ancient("/dev/shm/ref_rep{rep}.index"),
-		query = data_dir + "query/rep{rep}_e{er}.fasta"
+		index = data_dir + "ref/rep{rep}_e{er}.index",
+		query = data_dir + "small_rep{rep}.fasta"
 	output: 
 		"dist_stellar/rep{rep}_e{er}.gff"
 	threads: workflow.cores
@@ -15,7 +15,7 @@ rule distribute_stellar:
 	shell:
 		"""	
 		(/usr/bin/time -a -o {stellar_log} -f "%e\t%M\t%x\t%C\t{threads}\t{wildcards.er}" \
-			valik search  --split-query --verbose \
+			dream-stellar search  --split-query --verbose --bin-cutoff 1.0 --bin-entropy-cutoff 1.0 \
 				--numMatches {num_matches} --sortThresh {sort_thresh} --time \
 				--index {input.index} --query {input.query} \
 				--error-rate {wildcards.er} --threads {threads} --output {output} \

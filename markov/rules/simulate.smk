@@ -2,8 +2,8 @@ rule simulate_sequences:
 	input:
 		ref = "/srv/data/evelina/mouse/dna4.fasta"
 	output:
-		ref = data_dir + "ref_rep{rep}.fasta",
-		query = temp(data_dir + "random_rep{rep}.fasta")
+		ref = data_dir + "large_rep{rep}.fasta",
+		query = data_dir + "small_rep{rep}.fasta"
 	params:
 		ref_seed = get_seed,
 		query_seed = get_seed
@@ -12,12 +12,12 @@ rule simulate_sequences:
 
 rule simulate_matches:
 	input:
-		ref = data_dir + "ref_rep{rep}.fasta",
-		query = data_dir + "random_rep{rep}.fasta"
+		data_dir + "large_rep{rep}.fasta",
+		data_dir + "small_rep{rep}.fasta"
 	output:
-		query = data_dir + "query/rep{rep}_e{er}.fasta",
-		matches = data_dir + "local_matches/rep{rep}_e{er}.fasta",
-		truth = data_dir + "ground_truth/rep{rep}_e{er}.tsv"
+		data_dir + "ref/rep{rep}_e{er}.fasta",
+		data_dir + "local_matches/rep{rep}_e{er}.fasta",
+		data_dir + "ground_truth/rep{rep}_e{er}.tsv"
 	params:
 		seed = get_seed
 	shell:      

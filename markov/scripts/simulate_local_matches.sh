@@ -13,18 +13,19 @@ SEED=$8
 echo "Sampling $MATCH_COUNT local matches between $MIN_LEN and $MAX_LEN bp with an error rate of $ERROR_RATE"
 
 mkdir -p local_matches
-mkdir -p query
+mkdir -p ref
 generate_local_matches \
 	--matches-out $DIR/local_matches/rep${REP}_e${ERROR_RATE}.fasta \
-	--genome-out $DIR/query/rep${REP}_e${ERROR_RATE}.fasta \
+	--genome-out $DIR/ref/rep${REP}_e${ERROR_RATE}.fasta \
 	--max-error-rate $ERROR_RATE \
 	--num-matches $MATCH_COUNT \
 	--min-match-length $MIN_LEN \
 	--max-match-length $MAX_LEN \
 	--ref-len $REF_LEN \
 	--verbose-ids \
-	--query $DIR/random_rep${REP}.fasta \
-	$DIR/ref_rep${REP}.fasta 1> $DIR/match_positions.txt 2> /dev/null
+	--query $DIR/large_rep${REP}.fasta \
+	$DIR/small_rep${REP}.fasta 1> $DIR/match_positions.txt 
+	#2> /dev/null
 
 
 truth_file="${DIR}/ground_truth/rep${REP}_e${ERROR_RATE}.tsv"

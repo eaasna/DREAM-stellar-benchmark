@@ -34,8 +34,10 @@ for exec in "${execs[@]}"; do
 done
 
 echo "Simulating reference of length $REF_LENGTH with seed $REF_SEED"
-markov_genome simulate --seed $REF_SEED --order $ORDER --input $REF_IN --lens $REF_LENGTH --output $REF_OUT
+len=$(( $REF_LENGTH / 5 ))
+markov_genome simulate --seed $REF_SEED --order $ORDER --input $REF_IN --lens $len --lens $len --lens $len --lens $len --lens $len --output $REF_OUT
 
+len=$(( $QUERY_LENGTH / 5 ))
 echo "Simulating query of length $QUERY_LENGTH with seed $QUERY_SEED"
-markov_genome simulate --seed $QUERY_SEED --order $ORDER --input $REF_IN --lens $QUERY_LENGTH --output $QUERY_OUT
+markov_genome simulate --seed $QUERY_SEED --order $ORDER --input $REF_IN --lens $len --lens $len --lens $len --lens $len --lens $len --output $QUERY_OUT
 
