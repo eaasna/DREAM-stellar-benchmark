@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
+if [ "$#" -ne 8 ]; then
+	echo "Usage: bash + 8 args"
+fi
+
 REF_IN=$1
 REF_OUT=$2
 QUERY_OUT=$3

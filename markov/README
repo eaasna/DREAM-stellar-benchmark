@@ -1,0 +1,44 @@
+Model sequences where adjacent positions are dependent on each other
+and
+local matches are sampled with a normal distribution across the reference
+
+
+------------------------------------------------
+Benchmark 0: On demand fetching of sequences vs holding in memory (trade off between memory and time)
+
+14.01.26
+
+Done: test on 100Mb dataset of 10 sequences to have a more noticeable effect on memory peak
+
+------------------------------------------------
+Benchmark 1: Adjust the cart queue params to limit the rate of search (trade off between memory and time)
+
+12.01.26
+
+Done: In dream-stellar allow on demand fetching of reference sequences
+
+31.12.25
+
+PROBLEM: Very high memory for very small queue!
+
+Solutions?
+Reduce the numMatches and sortThresh to avoid a very large number of matches before consolidation. NO effect
+
+------------------------------------------------
+Benchmark 2: Adjust the fraction threshold for adaptive seeding (trade off between time and accuracy)
+
+12.01.26
+
+Changed the match start location dist from uniform to normal
+
+Compared entropy and adaptive seeding threshold for 10Mb and 250Mb datasets
+
+31.12.25
+
+PROBLEM: no effect when changing adaptive threshold
+
+Solutions? 
+Make sure that local matches are sampled with a normal (non-uniform) distribution so some bins have much more matches. YES 
+But is the std variation too large? i.e too many bins with high count?
+
+14:00 changed std dev to 10% of seq_mean instead of the previous 33%

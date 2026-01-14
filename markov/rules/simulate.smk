@@ -8,7 +8,9 @@ rule simulate_sequences:
 		ref_seed = get_seed,
 		query_seed = get_seed
 	shell:
-		"{script_dir}/simulate_sequences.sh {input.ref} {output.ref} {output.query} {ref_len} {query_len} {params.ref_seed} {params.query_seed} {order}"
+		"""
+		{script_dir}/simulate_sequences.sh {input.ref} {output.ref} {output.query} {ref_len} {query_len} {params.ref_seed} {params.query_seed} {order}
+		"""
 
 rule simulate_matches:
 	input:
@@ -21,5 +23,11 @@ rule simulate_matches:
 	params:
 		seed = get_seed
 	shell:      
-		"{script_dir}/simulate_local_matches.sh {wildcards.rep} {data_dir} {min_len} {max_len} {ref_len} {wildcards.er} {matches} {params.seed}"
+		"""
+		{script_dir}/simulate_local_matches.sh {wildcards.rep} {data_dir} {min_len} {max_len} {query_len} {wildcards.er} {matches} {params.seed}
+		if [ -f {data_dir}ref/rep{wildcards.rep}_e{wildcards.er}.0.header ]; then
+		    rm {data_dir}ref/*.header
+		    rm {data_dir}ref/*.minimiser
+		fi
+		"""
 

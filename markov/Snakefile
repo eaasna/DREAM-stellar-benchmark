@@ -12,7 +12,7 @@ cart_capacities = config["cart_capacities"]
 queue_capacities = config["queue_capacities"]
 
 error_rates = [0.02, 0.04, 0.06, 0.08, 0.1]
-error_rates = [0.06]
+#error_rates = [0.06]
 max_er = max(error_rates)
 
 # local match lengths 
@@ -27,12 +27,11 @@ min_overlap = 48
 
 # adaptive seeding
 
-adapt_cutoffs = [0.2, 0.4, 0.6, 0.8, 1.0]
 #adapt_cutoffs = [0.2, 0.4, 0.6, 0.8, 1.0]
-adapt_cutoffs = [0.6]
-#adapt_cutoffs = [1.0]
-entropy_cutoffs = [1.0]
-#entropy_cutoffs = [0.2, 0.4, 0.6, 0.8, 1.0]
+#adapt_cutoffs = [0.6]
+adapt_cutoffs = [1.0]
+#entropy_cutoffs = [1.0]
+entropy_cutoffs = [0.2, 0.4, 0.6, 0.8, 1.0]
 
 #thresh=config["thresh"]
 
@@ -66,16 +65,22 @@ def get_seed(wildcards):
 
 #-------- Shared functions \--------
 
+wildcard_constraints:
+	cart_cap="[0-9]+",
+	queue_cap="[0-9]+",
+	ac="[0-1].[0-9]+",
+	ec="[0-1].[0-9]+",
+
 rule make_all:
 	input:
 		#expand(data_dir + "ref/rep{rep}_e{er}.index", rep = repetitions, er = error_rates)
 		#expand(data_dir + "evaluation/valik_rep{rep}_e{er}_a{ac}_n{ec}.tsv", rep = repetitions, er = error_rates, ac = adapt_cutoffs, ec = entropy_cutoffs),
 		#expand("evaluation/stellar_rep{rep}_e{er}.tsv", rep = repetitions, er = error_rates)
 		#"dist_stellar_table1.tsv",
-	#"valik_table1.tsv"
+		"valik_table1.tsv"
 		#expand(data_dir + "ref/rep{rep}_e{er}.fasta", rep = repetitions, er = error_rates),
 		#expand(data_dir + "query/rep{rep}_e{er}.fasta", rep = repetitions, er = [0, 0.02])
-		expand("valik/rep{rep}_e{er}_a{ac}_n{ec}_cart{cart_cap}_queue{queue_cap}.gff", rep = repetitions, er = error_rates, ac = adapt_cutoffs, ec = entropy_cutoffs, cart_cap = cart_capacities, queue_cap = queue_capacities),
+		#expand("valik/rep{rep}_e{er}_a{ac}_n{ec}_cart{cart_cap}_queue{queue_cap}.gff", rep = repetitions, er = error_rates, ac = adapt_cutoffs, ec = entropy_cutoffs, cart_cap = cart_capacities, queue_cap = queue_capacities),
 		#expand("dist_stellar/rep{rep}_e{er}.gff", rep = repetitions, er = error_rates)
 	shell:
 		"echo 'Done'"

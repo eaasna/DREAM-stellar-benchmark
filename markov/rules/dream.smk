@@ -2,7 +2,7 @@ valik_build_log="valik_build.time"
 f = open(valik_build_log, "a")
 f.write("time\tmem\texit-code\tcommand\tthreads\tbins\tfpr\terror-rate\tmin-len\tibf_size\n")
 f.close()
-rule valik_build:
+rule index_build:
 	input:
 		ref = data_dir + "ref/rep{rep}_e{er}.fasta"
 	output:
@@ -30,7 +30,7 @@ valik_search_log="valik_search.time"
 f = open(valik_search_log, "a")
 f.write("time\tmem\texit-code\tcommand\tthreads\tbins\tadapt-cutoff\tentropy-cutoff\tcart-cap\tqueue-cap\terror-rate\tmin-len\tmatches\trepeat_queries\trepeat_lookups\n")
 f.close()
-rule valik_search:
+rule query_search:
 	input:
 		ibf = data_dir + "ref/rep{rep}_e{er}.index",
 		query = data_dir + "small_rep{rep}.fasta",
@@ -46,7 +46,7 @@ rule valik_search:
 				--split-query --cache-thresholds \
 				--numMatches {num_matches} --sortThresh {sort_thresh} --time \
 				--index {input.ibf} --query {input.query} \
-				--error-rate {wildcards.er} --threads 1 --output {output} \
+				--error-rate {wildcards.er} --threads {threads} --output {output} \
 				--cart-max-capacity {wildcards.cart_cap} --max-queued-carts {wildcards.queue_cap} \
 				--seg-count {seg_count} &> {output}.err)
 		
