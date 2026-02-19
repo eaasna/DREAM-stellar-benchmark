@@ -2,118 +2,12 @@
 
 set -ex
 
-execs=(markov_genome generate_local_matches)
-for exec in "${execs[@]}"; do
-    if ! which ${exec} &>/dev/null; then
-        echo "${exec} is not available"
-        echo ""
-        echo "make sure \"${execs[@]}\" are reachable via the \${PATH} variable"
-        echo ""
-
-        # trying to do some guessing here:
-        paths+=(/group/ag_abi/evelina/DREAM-stellar-benchmark/lib/raptor_data_simulation/build/bin)
-        paths+=(./group/ag_abi/evelina/DREAM-stellar-benchmark/lib/raptor_data_simulation/build/src/mason2/src/mason2-build/bin)
-	paths+=(/group/ag_abi/evelina/markov_genome/target/release)
-        p=""
-        for pp in ${paths[@]}; do
-            p=${p}$(realpath -m $pp):
-        done
-        echo "you could try "
-        echo "export PATH=${p}\${PATH}"
-
-        exit 127
-    fi
-done
-
 #dream_stellar="/group/ag_abi/evelina/valik/build_io/bin/dream-stellar"
 #prefix="io_on_demand"
-dream_stellar="/group/ag_abi/evelina/valik/debug/bin/dream-stellar"
-prefix="read_all_massif"
+dream_stellar="/group/ag_abi/evelina/valik/build/bin/dream-stellar"
+prefix="read_all"
 
-###################################### data simulation #####################################
-
-REF_IN="/srv/data/evelina/mouse/dna4.fasta"
-ref_size="10Mb"
-
-REF_OUT="/srv/data/evelina/markov/$ref_size/large_rep0.fasta"
-REF_LENGTH=10485760
-REF_SEED=15
-
-QUERY_OUT="/srv/data/evelina/markov/$ref_size/small_rep0.fasta"
-QUERY_LENGTH=104858
-QUERY_SEED=9010
-ORDER=3
-
-REP=0
-data_dir="/srv/data/evelina/markov/$ref_size"
-DIR=$data_dir
-MIN_LEN=50
-MAX_LEN=200
-
-MATCH_COUNT=10485
-ERROR_RATE="0.06"
-
-run_simulation=1
-run_build=1
-
-
-if [ $run_simulation -eq 1 ]; then
-	echo "Simulating reference of length $REF_LENGTH with seed $REF_SEED"
-	len=$(( $REF_LENGTH / 10 ))
-	markov_genome simulate --seed $REF_SEED --order $ORDER --input $REF_IN --lens $len --lens $len --lens $len --lens $len --lens $len --lens $len --lens $len --lens $len --lens $len --lens $len --output $REF_OUT
-
-	len=$(( $QUERY_LENGTH / 10 ))
-	echo "Simulating query of length $QUERY_LENGTH with seed $QUERY_SEED"
-	markov_genome simulate --seed $QUERY_SEED --order $ORDER --input $REF_IN --lens $len --lens $len --lens $len --lens $len --lens $len --lens $len --lens $len --lens $len --lens $len --lens $len --output $QUERY_OUT
-
-	echo "Sampling $MATCH_COUNT local matches between $MIN_LEN and $MAX_LEN bp with an error rate of $ERROR_RATE"
-
-	mkdir -p local_matches
-	mkdir -p ref
-	generate_local_matches \
-		--matches-out $DIR/local_matches/rep${REP}_e${ERROR_RATE}.fasta \
-		--genome-out $DIR/ref/rep${REP}_e${ERROR_RATE}.fasta \
-		--max-error-rate $ERROR_RATE \
-		--num-matches $MATCH_COUNT \
-		--min-match-length $MIN_LEN \
-		--max-match-length $MAX_LEN \
-		--ref-len $QUERY_LENGTH \
-		--verbose-ids \
-		--normal \
-		--query $DIR/large_rep${REP}.fasta \
-		$DIR/small_rep${REP}.fasta 1> $DIR/match_positions.txt
-		#2> /dev/null
-
-
-	truth_file="${DIR}/ground_truth/rep${REP}_e${ERROR_RATE}.tsv"
-	grep ">" $DIR/local_matches/rep${REP}_e${ERROR_RATE}.fasta | cut -c 2- | awk -F, '{ print $1 " " $2 }' | sed 's/start_position=//g' | sed 's/length=//g' | awk '{print $2 "\t" $2+$3 }' > $truth_file
-	sort -g -k2 $truth_file -o $truth_file
-fi
-
-
-###################################### input parameters #####################################
-rep=0
-max_er=0.1
-
-query="$data_dir/small_rep${rep}.fasta"
-ref_meta="$data_dir/rep${rep}_e${er}.bin"
-
-b=1024
-p=50
-fpr=0.005
-numMatches=3000000
-sortThresh=3000001
-#seg=3495
-seg=349
-carts=1024
-cap=500
-
-k=16
-s="11111010010100110111111"
-
-###################################### ref index ###################################### 
-indexoutdir="/dev/shm/markov/$ref_size/"
-
+###################################### make ref index ###################################### 
 
 function make_index {
     ref=$1
@@ -135,7 +29,7 @@ function make_index {
     rm $indexoutdir/rep*.header
 }
 
-###################################### search accuracy ###################################### 
+###################################### find search accuracy ###################################### 
 function search_accuracy {
   local truth=$1
   local test=$2
@@ -157,41 +51,69 @@ function search_accuracy {
   echo -e "\t$bin_cutoff\t$er_count\t$stype\t$truth" >> $out
 }
 
-bin_cutoff=0.5
-er_count=3
-for t in 1; do
-for cap in 1000; do
-for carts in 1024; do
-	er=$(bc <<< "scale=2;$er_count/$p")
-	echo $er
-	outdir="/buffer/ag_abi/evelina/markov/$ref_size/$prefix/efficiency_0$er"
-	log="search_efficiency_0$er.log"
-	acc_out="$outdir/valik.stellar.accuracy"
-	truth="work/$ref_size/dist_stellar/rep${rep}_${er}.gff"
-	
-	ref="$data_dir/ref/rep${rep}_e0${er}.fasta"
-	index="$indexoutdir/rep${rep}_e0${er}.index"
-	if [ $run_build -eq 1 ]; then
-		make_index $ref $index
-	fi
+###################################### input data #####################################
 
-	mkdir -p $outdir
+ref_size="100Mb"
+data_dir="/srv/data/evelina/markov/$ref_size"
+
+indexoutdir="/dev/shm/markov/$ref_size"
+run_build=1
+
+###################################### input parameters #####################################
+
+p=50
+max_er=0.1
+er_count=5
+er=$(bc <<< "scale=2;$er_count/$p")
+ERROR_RATE="$er"
+fpr=0.005
+numMatches=3000000
+sortThresh=3000001
+
+bin_cutoff=$1
+t=4
+reps=5
+
+# defaults
+b=1024
+seg=3500
+carts=1000
+cap=1000
+
+# only for manual k-mer size
+k=16
+s="11111010010100110111111"
+
+for rep in $(seq 1 $reps); do
+
+runid="rep${rep}_e0${er}"
+data_out_dir="/buffer/ag_abi/evelina/markov/$ref_size/"
+outdir="$data_out_dir/$prefix/efficiency_${runid}"
+log="search_efficiency_${runid}.log"
+acc_out="$outdir/valik.stellar.accuracy"
+truth="$data_out_dir/dist_stellar/${runid}.gff"
+
+query="$data_dir/small_rep${rep}.fasta"
+ref="$data_dir/ref/${runid}.fasta"
+index="$indexoutdir/${runid}.index"
+ref_meta="$indexoutdir/${runid}.bin"
+
+if [ $run_build -eq 1 ]; then
+	make_index $ref $index
+fi
+mkdir -p $outdir
 
 # distributed not prefiltered
-search_out="$outdir/dist_stellar.gff"
-#(/usr/bin/time -a -o $log -f "%e\t%M\t%x\tdist-no-prefilter\t%C" $dream_stellar search --split-query --verbose \
-#	--numMatches $numMatches --sortThresh $sortThresh --time --index $index --query $query \
-#	--error-rate $er --threads $t --output $search_out --stellar-only \
-#	--bin-cutoff 1.0) &> $outdir/dist_stellar.search.err
-
-# sequential k-mer filtered with thresh
-if (( $(echo "$er_count == 1" |bc -l) )); then
-   	thresh=13
-elif (( $(echo "$er_count == 2" |bc -l) )); then
-   	thresh=8
-else
-   	thresh=7
+if [ ! -f $truth ]; then
+(/usr/bin/time -a -o $log -f "%e\t%M\t%x\tdist-no-prefilter\t%C" $dream_stellar search --split-query --verbose \
+	--numMatches $numMatches --sortThresh $sortThresh --time --index $index --query $query \
+	--error-rate $er --threads $t --output $truth --stellar-only \
+	--bin-cutoff 1.0) &> $outdir/dist_stellar.search.err
 fi
+
+for seg in 10 20 50 250 500 1000 2000 4000 8000; do
+for cap in 1000; do
+for carts in 1000; do
 
 search_out="$outdir/kmer_t1_thresh.gff"
 search_type="seq-kmer-prefilter-same-thresh"
@@ -249,12 +171,12 @@ search_type="dist-kmer-prefilter"
 # distributed gapped k-mer filtered
 search_out="$outdir/gapped_kmer.gff"
 search_type="dist-gapped-prefilter"
-#(/usr/bin/time -a -o $log -f "%e\t%M\t%x\t$search_type\t$bin_cutoff\t$er_count\t%C" \
-(valgrind --tool=massif --log-file="${search_type}.massif.log" \
+#(valgrind --tool=massif --log-file="${search_type}.massif.log" \
+(/usr/bin/time -a -o $log -f "%e\t%M\t%x\t$search_type\t$bin_cutoff\t$er_count\t%C" \
 	$dream_stellar search --split-query \
 	--cache-thresholds --seg-count $seg --cart-max-capacity $cap --max-queued-carts $carts \
 	--numMatches $numMatches --sortThresh $sortThresh --time --index \
-	$index --query $query --error-rate $er --threads $t \
+	$index --query $query --error-rate $er --threads $t --verbose \
 	--output $outdir/gapped_kmer.gff --bin-cutoff $bin_cutoff) 
 	#&> $outdir/gapped_kmer.search.err
 	matches=`wc -l $outdir/gapped_kmer.gff | awk '{print $1}'`
@@ -265,6 +187,14 @@ if [ -f $truth ];then
 	search_accuracy $truth $search_out $acc_out $search_type
 fi
 
+# sequential k-mer filtered with thresh
+#if (( $(echo "$er_count == 1" |bc -l) )); then
+ #  	thresh=13
+#elif (( $(echo "$er_count == 2" |bc -l) )); then
+ #  	thresh=8
+#else
+ #  	thresh=7
+#fi
 # distributed gapped k-mer filtered with thresh
 search_out="$outdir/gapped_kmer_thresh.gff"
 search_type="dist-gapped-prefilter-thresh"
@@ -274,7 +204,7 @@ search_type="dist-gapped-prefilter-thresh"
 #	--numMatches $numMatches --sortThresh $sortThresh --time --index \
 #	$index --query $query --error-rate $er --threads $t \
 #	--output $outdir/gapped_kmer_thresh.gff --bin-cutoff $bin_cutoff \
-#	--threshold 2 ) &> $outdir/gapped_kmer_thresh.search.err
+#	--threshold $thresh ) &> $outdir/gapped_kmer_thresh.search.err
 
 #if [ -f $truth ];then
 #	search_accuracy $truth $search_out $acc_out $search_type
@@ -286,6 +216,7 @@ search_type="no-dist-no-prefilter"
 #(/usr/bin/time -a -o $log -f "%e\t%M\t%x\t$search_type\t%C" stellar -a dna --numMatches $numMatches \
 #	--sortThresh $sortThresh $ref $query -e $er -l $p -o $search_out) &> outdir/stellar.search.err
 
+done
 done
 done
 done
