@@ -16,7 +16,7 @@ rule valik_build:
 		"benchmarks/valik_build_rep{rep}.txt"
 	shell:
 		"""
-		( /usr/bin/time -a -o {valik_build_log} -f "%e\t%M\t%x\t%C\t{threads}\t{bins}\t{fpr}\t{max_er}\t{min_len}" valik build {input.ref} --error-rate {max_er} -n {bins} --fpr {fpr} --pattern {min_len} --threads {threads} --output {output.index} --verbose &> {params.log})
+		( /usr/bin/time -a -o {valik_build_log} -f "%e\t%M\t%x\t%C\t{threads}\t{bins}\t{fpr}\t{max_er}\t{min_len}" dream-stellar build {input.ref} --error-rate {max_er} -n {bins} --fpr {fpr} --pattern {min_len} --threads {threads} --output {output.index} --verbose &> {params.log})
  
 		truncate -s -1 {valik_build_log}
 		ls -lh {output} | awk '{{ print "\t" $5 }}' >> {valik_build_log}
@@ -38,7 +38,8 @@ rule valik_search:
 	shell:
 		"""
 		(/usr/bin/time -a -o {valik_search_log} -f "%e\t%M\t%x\t%C\t{threads}\t{bins}\t{fpr}\t{wildcards.er}\t{min_len}\t" \
-			valik search --keep-best-repeats --split-query --cache-thresholds --verbose \
+			dream-stellar search --bin-cutoff {bin_cutoff} \
+				--split-query --cache-thresholds --verbose \
 				--numMatches {num_matches} --sortThresh {sort_thresh} --time \
 				--index {input.ibf} --query {input.query} \
 				--error-rate {wildcards.er} --threads {threads} --output {output} \

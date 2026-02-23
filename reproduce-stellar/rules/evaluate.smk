@@ -75,7 +75,7 @@ rule blast_accuracy:
 	input:
 		search = "blast/rep{rep}_e{er}.bed",
 		truth = "dist_stellar/rep{rep}_e{er}.gff",
-		ref_meta = ancient("meta/ref_rep{rep}_e{er}.bin")
+		ref_meta = ancient("/dev/shm/ref_rep{rep}.bin")
 	output:
 		"evaluation/blast_rep{rep}_e{er}.tsv"
 	shell:
@@ -98,7 +98,7 @@ rule blast_default_accuracy:
 	input:
 		search = "blast_default/rep{rep}_e{er}.bed",
 		truth = "dist_stellar/rep{rep}_e{er}.gff",
-		ref_meta = "meta/ref_rep{rep}_e{er}.bin"
+		ref_meta = "/dev/shm/ref_rep{rep}.bin"
 	output:
 		"evaluation/blast_default_rep{rep}_e{er}.tsv"
 	shell:
@@ -121,7 +121,7 @@ rule last_accuracy:
 	input:
 		search = "last/rep{rep}_e{er}.bed",
 		truth = "dist_stellar/rep{rep}_e{er}.gff",
-		ref_meta = "meta/ref_rep{rep}_e{er}.bin"
+		ref_meta = "/dev/shm/ref_rep{rep}.bin"
 	output:
 		"evaluation/last_rep{rep}_e{er}.tsv"
 	shell:
@@ -144,7 +144,7 @@ rule lastz_accuracy:
 	input:
 		search = "lastz/rep{rep}_e{er}.bed",
 		truth = "dist_stellar/rep{rep}_e{er}.gff",
-		ref_meta = "meta/ref_rep{rep}_e{er}.bin"
+		ref_meta = "/dev/shm/ref_rep{rep}.bin"
 	output:
 		"evaluation/lastz_rep{rep}_e{er}.tsv"
 	shell:
