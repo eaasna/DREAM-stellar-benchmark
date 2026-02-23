@@ -2,16 +2,16 @@ Model sequences where adjacent positions are dependent on each other
 and
 local matches are sampled with a normal distribution across the reference
 
+TODO: adaptive seeding vs information content filter 
+
 19.02.26
 
 Make sequences with order 11 for 12-mer search. 
 
-Running: benchmark of queue params for er=0.1
-TODO: all for er=0.06 and er=0.08
-TODO: segment length
-TODO: bin count 
-TODO: on demand fetching vs in memory
-TODO: adaptive seeding vs information content filter 
+Done: queue params with on demand fetching vs in memory
+Done: segment length for er=0.1 er=0.06 er=0.08 and accuracy
+Done: is the markov genome closer to a real genome i.e performance degrades at higher error rates
+Done: bin count 
 
 ------------------------------------------------
 Benchmark 0: On demand fetching of sequences vs holding in memory (trade off between memory and time)

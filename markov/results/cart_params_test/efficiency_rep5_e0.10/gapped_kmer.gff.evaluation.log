@@ -1,0 +1,17 @@
+Truth matches	110715
+Test matches	114276
+dname	true-match-count	test-match-count
+0	11034	11412
+1	11110	11492
+2	11075	11442
+3	11128	11516
+4	11049	11354
+5	10886	11216
+6	11176	11550
+7	11178	11568
+8	10971	11277
+9	11108	11449
+Accuracy report
+True positives	114174
+False positives	102
+False negatives	2216

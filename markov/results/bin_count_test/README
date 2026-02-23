@@ -1,0 +1,2 @@
+#./run_efficiency_test.sh 3 1024; ./run_efficiency_test.sh 3 64; ./run_efficiency_test.sh 3 128; ./run_efficiency_
+test.sh 3 256; ./run_efficiency_test.sh 3 512; ./run_efficiency_test.sh 3 1024; ./run_efficiency_test.sh 3 2048; 

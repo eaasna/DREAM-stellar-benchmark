@@ -63,14 +63,14 @@ run_build=1
 
 p=50
 max_er=0.1
-er_count=5
+er_count=$1
 er=$(bc <<< "scale=2;$er_count/$p")
 ERROR_RATE="$er"
 fpr=0.005
 numMatches=3000000
 sortThresh=3000001
 
-bin_cutoff=$1
+bin_cutoff=0.5
 t=4
 reps=5
 
@@ -95,8 +95,8 @@ truth="$data_out_dir/dist_stellar/${runid}.gff"
 
 query="$data_dir/small_rep${rep}.fasta"
 ref="$data_dir/ref/${runid}.fasta"
-index="$indexoutdir/${runid}.index"
-ref_meta="$indexoutdir/${runid}.bin"
+index="$indexoutdir/${runid}_b$b.index"
+ref_meta="$indexoutdir/${runid}_b$b.bin"
 
 if [ $run_build -eq 1 ]; then
 	make_index $ref $index
@@ -111,10 +111,9 @@ if [ ! -f $truth ]; then
 	--bin-cutoff 1.0) &> $outdir/dist_stellar.search.err
 fi
 
-for seg in 10 20 50 250 500 1000 2000 4000 8000; do
-for cap in 1000; do
-for carts in 1000; do
-
+#for seg in 10 20 50 250 500 1000 2000 4000 8000; do
+#for cap in 10 100 1000; do
+#for carts in 1 2 4 1000; do
 search_out="$outdir/kmer_t1_thresh.gff"
 search_type="seq-kmer-prefilter-same-thresh"
 #(/usr/bin/time -a -o $log -f "%e\t%M\t%x\t$search_type\t$bin_cutoff\t$er_count%C" \
@@ -217,6 +216,5 @@ search_type="no-dist-no-prefilter"
 #	--sortThresh $sortThresh $ref $query -e $er -l $p -o $search_out) &> outdir/stellar.search.err
 
 done
-done
-done
-done
+#done
+#done

@@ -1,0 +1,8 @@
++ /usr/bin/time -a -o search_efficiency_rep1_e0.10.log -f '%e\t%M\t%x\tdist-no-prefilter\t%C' /group/ag_abi/evelina/valik/build/bin/dream-stellar search --split-query --verbose --numMatches 3000000 --sortThresh 3000001 --time --index /dev/shm/markov/100Mb/rep1_e0.10.index --query /srv/data/evelina/markov/100Mb/small_rep1.fasta --error-rate .10 --threads 4 --output /buffer/ag_abi/evelina/markov/100Mb//dist_stellar/rep1_e0.10.gff --stellar-only --bin-cutoff 1.0
+Searching without prefiltering.
+
+-----------Local match definition-----------
+min length 50bp
+max error rate 0.1
+Launching stellar search on a shared memory machine...
+Loaded 10 database sequences.

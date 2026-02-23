@@ -1,0 +1,14 @@
+Ref I/O	IBF I/O		Search	Effective query count	Min cart time	Avg cart time	Max cart time	Consolidation
+0.00	0.04	9.07	1024000	0.0000	0.0000	0.0000	0.3466
+Ref I/O	IBF I/O		Search	Effective query count	Min cart time	Avg cart time	Max cart time	Consolidation
+0.00	0.04	13.33	97000	0.0000	0.0000	0.0000	0.1949
+Ref I/O	IBF I/O		Search	Effective query count	Min cart time	Avg cart time	Max cart time	Consolidation
+0.00	0.04	11.29	128000	0.0000	0.0000	0.0000	0.2438
+Ref I/O	IBF I/O		Search	Effective query count	Min cart time	Avg cart time	Max cart time	Consolidation
+0.00	0.04	10.58	256000	0.0000	0.0000	0.0000	0.2789
+Ref I/O	IBF I/O		Search	Effective query count	Min cart time	Avg cart time	Max cart time	Consolidation
+0.00	0.03	10.18	512000	0.0000	0.0000	0.0000	0.3185
+Ref I/O	IBF I/O		Search	Effective query count	Min cart time	Avg cart time	Max cart time	Consolidation
+0.00	0.03	9.09	1024000	0.0000	0.0000	0.0000	0.3326
+Ref I/O	IBF I/O		Search	Effective query count	Min cart time	Avg cart time	Max cart time	Consolidation
+0.00	0.04	7.91	2048000	0.0000	0.0000	0.0000	0.4860
